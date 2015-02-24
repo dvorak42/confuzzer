@@ -5,7 +5,7 @@
 
 int main(void)
 {
-  char key[] = "\x79\x67\x69\x75\x65";
+  char key[] = "\x4f\x43\x45\x4b\x41";
   int fd = 0;
   int i = 0;
   char buf[256] = {0};
@@ -16,7 +16,7 @@ int main(void)
   close(fd);
 
   while(i < 5) {
-    if((*r ^ (0x22)) != key[i])
+    if((*r ^ 0x22) != key[i])
       return 1;
     r++;
     i++;

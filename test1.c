@@ -23,6 +23,7 @@ int main(void)
   close(fd);
 
   if(strcmp2(key, r) == 0) {
+    printf("Success!\n");
     return 0;
     //printf("Correct!\n");
   } else {
