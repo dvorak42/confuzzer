@@ -1,0 +1,22 @@
+* Confuzzer: Guided Fuzzer for Closed-Source Software using Concolic Execution
+
+** Overview
+The idea is that the system can either run headless as a standard fuzzer, using simple search algorithms across all the available branches, while the user can also prioritize certain branches from a generated graph to search through specific branches of the program.
+
+** Main Components
+The system is divided into a number of components:
+*** Pyfuzz
+Python wrapper to use the Conexec output to try finding inputs that would hit alternative paths.
+*** Conexec
+A PIN plugin that keeps track of the spread of tainted input across the system, as well as keeping track of the branches traveled in the current execution. The system then generates the path constraints for the current execution.
+*** Branchdot
+A generated graphviz graph representing all the known branching points of the program, as well as highlighting the potential new branches.
+** Extensions
+Once the core things are working, other parts of the system that can be added are:
+
+*** Standard Functions
+Things like strcmp and other libc functions are giant sinkholes for the concolic execution, since they have a large amount of looping/branching. We could probably special-case some of the functions when doing search on them to reduce the number of branches here.
+*** Expanded Inputs
+Currently I'm using the model that a file is considered tainted, and then any reads from it are tainted. While most programs can be handled in this way, by creating wrapper programs that then take the tainted file and use parts of it as commandline args and other program inputs, it would be nice to be able to handle tainting arbitrary parts of the program.
+*** Fuzzer End Conditions
+Currently there's no good way for the Fuzzer to detect "bad" states. Since we're already injecting into the program using PIN, we can add checks for UAF, Buffer Overflows, Control Flow Hijacking, ... by keeping track of reads/writes. 
