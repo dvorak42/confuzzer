@@ -1,5 +1,6 @@
 #include "pin.H"
 #include <list>
+#include <map>
 #include <iomanip>
 #include <iostream>
 #include <sstream>
@@ -8,6 +9,10 @@
 
 std::list<UINT64> taintedAddress;
 std::list<REG> taintedRegister;
+std::map<UINT64, UINT64> addressID;
+std::map<REG, UINT64> registerID;
+std::map<string, string> taintEquations;
+
 
 static REG regs[] = {
   REG_RDI , REG_EDI , REG_DI  , REG_DIL , (REG)0,
@@ -30,6 +35,22 @@ static REG regs[] = {
   REG_RFLAGS, REG_EFLAGS, REG_FLAGS, (REG)0, (REG)0, 
 };
 
+string getValue(CONTEXT* ctxt, REG reg) {
+  UINT8 val;
+  PIN_GetContextRegval(ctxt, reg, (UINT8*)&val);
+  std::stringstream stream;
+  stream << std::setw(2) << std::hex << std::setfill('0') << int(val);
+  return std::string(stream.str());
+}
+
+string getValue(CONTEXT* ctxt, UINT64 addr) {
+  char buffer[1];
+  PIN_SafeCopy(buffer, (ADDRINT*)addr, 1);
+  std::stringstream stream;
+  stream << std::setw(2) << std::hex << std::setfill('0') << int(buffer[0]);
+  return std::string(stream.str());
+}
+
 int registerIndex(REG reg) {
   for(int i = 0; i < (int)(sizeof(regs) / sizeof(REG)); i++) {
     if(regs[i] == reg)
@@ -42,8 +63,20 @@ REG baseRegister(int index) {
   return regs[index / 5 * 5];
 }
 
+REG baseRegister(REG reg) {
+  return regs[registerIndex(reg) / 5 * 5];
+}
+
 int endIndex(int index) {
   return 5 * (index/5 + 1);
+}
+
+string getRegID(REG br) {
+  return RegisterName(br) + "_" + std::to_string(registerID[br]);
+}
+
+string getMemID(UINT64 memAddr) {
+  return std::to_string(memAddr) + "_" + std::to_string(addressID[memAddr]);
 }
 
 bool isRegisterTainted(REG reg) {
@@ -90,66 +123,88 @@ void removeMemoryTaint(UINT64 addr) {
 std::string printTaint() {
   std::stringstream state;
   
-  state << "Tainted Addresses:\n\t";
-  for(list<UINT64>::iterator i = taintedAddress.begin(); i != taintedAddress.end(); i++) {
-    state << "0x" << std::hex << *i << ", ";
-  }
+  //state << "Tainted Addresses:\n\t";
+  //for(list<UINT64>::iterator i = taintedAddress.begin(); i != taintedAddress.end(); i++) {
+  //  state << "0x" << std::hex << *i << " [" << addressID[*i] << "], ";
+  //}
   
   state << "\nTainted Registers:\n\t";
   for(list<REG>::iterator i = taintedRegister.begin(); i != taintedRegister.end(); i++) {
-    state << RegisterName(*i) << ", ";
+    state << RegisterName(*i) << " [" << registerID[*i] << "], ";
+  }
+
+  state << "\nEquations:\n";
+  typedef std::map<std::string, std::string>::iterator m_type;
+  for(m_type iterator = taintEquations.begin(); iterator != taintEquations.end(); iterator++) {
+    state << "\t" << iterator->first << ": " << iterator->second << std::endl;
   }
   return state.str();
 }
 
-void taintMemToReg(UINT64 instructionAddr, std::string instruction, UINT64 memAddr, REG reg) {
+void taintMemToReg(CONTEXT* ctxt, UINT64 instructionAddr, std::string instruction, UINT64 memAddr, REG reg) {
   if(!isMemoryTainted(memAddr)) {
     removeRegisterTaint(reg);
     return;
   }
+  REG br = baseRegister(reg);
+  if(!registerID.count(br)) {
+    registerID[br] = 0;
+  }
+  registerID[br] = registerID[br] + 1;
+  taintEquations[getRegID(br)] = instruction + " (M->R) - " + getValue(ctxt, memAddr) + " | " + getValue(ctxt, reg);
   if(isRegisterTainted(reg))
     return;
-  //std::cout << "[" << std::hex << instructionAddr << "] " << instruction << std::endl;
-  //std::cout << "[" << std::hex << instructionAddr << "] Tainting address 0x" << std::hex << memAddr << " to register " << RegisterName(reg) << std::endl;
   addRegisterTaint(reg);
-  //std::cout << printTaint() << std::endl;
 }
 
-void taintRegToMem(UINT64 instructionAddr, std::string instruction, REG reg, UINT64 memAddr) {
+void taintRegToMem(CONTEXT* ctxt, UINT64 instructionAddr, std::string instruction, REG reg, UINT64 memAddr) {
   if(!isRegisterTainted(reg)) {
     removeMemoryTaint(memAddr);
     return;
   }
+  if(!addressID.count(memAddr)) {
+    addressID[memAddr] = 0;
+  }
+  addressID[memAddr] = addressID[memAddr] + 1;
+  taintEquations[getMemID(memAddr)] = instruction + " (R->M) - " + getValue(ctxt, reg) + " | " + getValue(ctxt, memAddr);
   if(isMemoryTainted(memAddr))
     return;
-  //std::cout << "[" << std::hex << instructionAddr << "] " << instruction << std::endl;
-  //std::cout << "[" << std::hex << instructionAddr << "] Tainting register " << RegisterName(reg) << " to address 0x" << std::hex << memAddr << std::endl;
   addMemoryTaint(memAddr);
-  //std::cout << printTaint() << std::endl;
 }
 
-void taintRegToReg(UINT64 instructionAddr, std::string instruction, REG regSrc, REG regDst) {
+void taintRegToReg(CONTEXT* ctxt, UINT64 instructionAddr, std::string instruction, REG regSrc, REG regDst) {
   if(!isRegisterTainted(regSrc)) {
     removeRegisterTaint(regDst);
     return;
   }
-  //std::cout << "[" << std::hex << instructionAddr << "] " << instruction << std::endl;
+  REG br = baseRegister(regDst);
+  if(!registerID.count(br)) {
+    registerID[br] = 0;
+  }
+  registerID[br] = registerID[br] + 1;
+  taintEquations[getRegID(br)] = instruction + " (R->R) - " + getValue(ctxt, regSrc) + " | " + getValue(ctxt, regDst);
   if(isRegisterTainted(regDst))
     return;
-  //std::cout << "[" << std::hex << instructionAddr << "] Tainting register " << RegisterName(regSrc) << " to register " << RegisterName(regDst) << std::endl;
   addRegisterTaint(regDst);
-  //std::cout << printTaint() << std::endl;
 }
 
-void taintReg2ToReg(UINT64 instructionAddr, std::string instruction, REG regSrc1, REG regSrc2, REG regDst) {
+void taintConstantToReg(CONTEXT* ctxt, UINT64 instructionAddr, std::string instruction, REG regDst) {
+  removeRegisterTaint(regDst);
+  return;
+}
+
+void taintReg2ToReg(CONTEXT* ctxt, UINT64 instructionAddr, std::string instruction, REG regSrc1, REG regSrc2, REG regDst) {
   if(!isRegisterTainted(regSrc1) && !isRegisterTainted(regSrc2)) {
     removeRegisterTaint(regDst);
     return;
   }
-  //std::cout << "[" << std::hex << instructionAddr << "] " << instruction << std::endl;
+  REG br = baseRegister(regDst);
+  if(!registerID.count(br)) {
+    registerID[br] = 0;
+  }
+  registerID[br] = registerID[br] + 1;
+  taintEquations[getRegID(br)] = instruction + " (R+R->R) - " + getValue(ctxt, regSrc1) + " | " + getValue(ctxt, regSrc2);
   if(isRegisterTainted(regDst))
     return;
-  //std::cout << "[" << std::hex << instructionAddr << "] Tainting register " << RegisterName(regSrc) << " to register " << RegisterName(regDst) << std::endl;
   addRegisterTaint(regDst);
-  //std::cout << printTaint() << std::endl;
 }

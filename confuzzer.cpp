@@ -44,7 +44,8 @@ void trackInstruction(UINT64 addr, std::string instr) {
 
 void trackJump(UINT64 addr, std::string instr) {
   if(isRegisterTainted(REG_RFLAGS) || isRegisterTainted(REG_EFLAGS) || isRegisterTainted(REG_FLAGS)) {
-    std::cout << "Tainted Jump: " << std::hex << addr << " - " << instr << std::endl;
+    std::cout << "Tainted Jump: " << std::hex << addr << " - " << instr << " (" << getRegID(REG_RFLAGS) << ")" <<std::endl;
+    std::cout << printTaint() << std::endl;
     // TODO: Store Path Information
     // TODO: Store Path Constraint
   }
@@ -71,6 +72,7 @@ void instrument(INS instruction, void* v) {
     if(INS_MemoryOperandIsRead(instruction, 0) && INS_OperandIsReg(instruction, 0)) {
       // MEM -> REG
       INS_InsertCall(instruction, IPOINT_BEFORE, (AFUNPTR)taintMemToReg,
+		     IARG_CONTEXT,
 		     IARG_ADDRINT, INS_Address(instruction),
 		     IARG_PTR, new std::string(INS_Disassemble(instruction)),		     
 		     IARG_MEMORYOP_EA, 0,
@@ -81,14 +83,16 @@ void instrument(INS instruction, void* v) {
       // REG -> MEM
 
       INS_InsertCall(instruction, IPOINT_BEFORE, (AFUNPTR)taintRegToMem,
+		     IARG_CONTEXT,
 		     IARG_ADDRINT, INS_Address(instruction),
 		     IARG_PTR, new std::string(INS_Disassemble(instruction)),		     
-		     IARG_UINT32, INS_OperandReg(instruction, 1),
+		     IARG_UINT32, INS_OperandReg(instruction, 0),
 		     IARG_MEMORYOP_EA, 0,
 		     IARG_END);
-    } else if(INS_OperandIsReg(instruction, 0) && INS_OperandCount(instruction) >= 2) {
+    } else if(INS_OperandIsReg(instruction, 0) && INS_OperandCount(instruction) > 2 && INS_RegR(instruction, 0) && INS_RegR(instruction, 1) && INS_RegW(instruction, 0)) {
       // REG -> REG
       INS_InsertCall(instruction, IPOINT_BEFORE, (AFUNPTR)taintReg2ToReg,
+		     IARG_CONTEXT,
 		     IARG_ADDRINT, INS_Address(instruction),
 		     IARG_PTR, new std::string(INS_Disassemble(instruction)),		     
 		     IARG_UINT32, INS_RegR(instruction, 0),
@@ -96,23 +100,33 @@ void instrument(INS instruction, void* v) {
 		     IARG_UINT32, INS_RegW(instruction, 0),
 		     IARG_END);
       // TODO: Advance Dest Register ID
-    } else if(INS_OperandIsReg(instruction, 0)) {
+    } else if(INS_OperandIsReg(instruction, 0) && INS_RegR(instruction, 0) && INS_RegW(instruction, 0)) {
       // REG -> REG
       INS_InsertCall(instruction, IPOINT_BEFORE, (AFUNPTR)taintRegToReg,
+		     IARG_CONTEXT,
 		     IARG_ADDRINT, INS_Address(instruction),
 		     IARG_PTR, new std::string(INS_Disassemble(instruction)),		     
 		     IARG_UINT32, INS_RegR(instruction, 0),
 		     IARG_UINT32, INS_RegW(instruction, 0),
 		     IARG_END);
       // TODO: Advance Dest Register ID
+    } else if(INS_OperandIsReg(instruction, 0)) {
+      // Constant -> REG
+      INS_InsertCall(instruction, IPOINT_BEFORE, (AFUNPTR)taintConstantToReg,
+		     IARG_CONTEXT,
+		     IARG_ADDRINT, INS_Address(instruction),
+		     IARG_PTR, new std::string(INS_Disassemble(instruction)),
+		     IARG_UINT32, INS_RegW(instruction, 0),
+		     IARG_END);
     } else if(INS_MemoryOperandIsRead(instruction, 0)) {
       // MEM -> REG
       INS_InsertCall(instruction, IPOINT_BEFORE, (AFUNPTR)taintMemToReg,
-      	     IARG_ADDRINT, INS_Address(instruction),
-      	     IARG_PTR, new std::string(INS_Disassemble(instruction)),		     
-      	     IARG_MEMORYOP_EA, 0,
-      	     IARG_UINT32, INS_RegW(instruction, 0),
-      	     IARG_END);
+		     IARG_CONTEXT,
+		     IARG_ADDRINT, INS_Address(instruction),
+		     IARG_PTR, new std::string(INS_Disassemble(instruction)),		     
+		     IARG_MEMORYOP_EA, 0,
+		     IARG_UINT32, INS_RegW(instruction, 0),
+		     IARG_END);
 
     } 
   }
