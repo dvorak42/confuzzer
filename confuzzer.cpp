@@ -1,4 +1,5 @@
 #include <asm/unistd.h>
+#include <bitset>
 #include <iomanip>
 #include <iostream>
 #include <fstream>
@@ -47,7 +48,7 @@ void trackInstruction(UINT64 addr, std::string instr) {
 UINT64 branchID = 0;
 std::list<string> branchData;
 
-void trackJump(UINT64 addr, std::string instr) {
+void trackJump(CONTEXT* ctxt, UINT64 addr, std::string instr) {
   if(isRegisterTainted(REG_RFLAGS) || isRegisterTainted(REG_EFLAGS) || isRegisterTainted(REG_FLAGS)) {
     //std::cout << "Tainted Jump: " << std::hex << addr << " - " << instr << " (" << getRegID(REG_RFLAGS) << ")" <<std::endl;
     //std::cout << printTaint() << std::endl;
@@ -60,6 +61,13 @@ void trackJump(UINT64 addr, std::string instr) {
     std::stringstream branch;
     branch << "br_" << std::setw(8) << std::hex << std::setfill('0') << addr << "_" << branchID;
     branch << ": " << instr;
+
+    UINT8 val;
+    PIN_GetContextRegval(ctxt, REG_RFLAGS, (UINT8*)&val);
+    std::stringstream stream;
+    std::bitset<16> x(val);
+    stream << x;
+    branch << " (" << stream.str() << ")";
     branch << " - " << getRegID(REG_RFLAGS) << std::endl;      
 
     // if(instr.compare(0, 3, string("jnz")) == 0) {
@@ -86,6 +94,7 @@ void instrument(INS instruction, void* v) {
   } else if(INS_IsBranchOrCall(instruction)) {
     if(INS_Category(instruction) == XED_CATEGORY_COND_BR) {
       INS_InsertCall(instruction, IPOINT_BEFORE, (AFUNPTR)trackJump,
+		     IARG_CONTEXT,
 		     IARG_ADDRINT, INS_Address(instruction),
 		     IARG_PTR, new std::string(INS_Disassemble(instruction)),
 		     IARG_END);

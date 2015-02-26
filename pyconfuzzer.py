@@ -31,6 +31,11 @@ def asmInstruction(instr, eqtn):
         src2 = eqtn.split(' -> ')[0].split(' + ')[1]
         dst = eqtn.split(' -> ')[1]        
         return '%s = %s - %s' % (dst, src1, src2)
+    elif opc == 'add':
+        src1 = eqtn.split(' -> ')[0].split(' + ')[0]
+        src2 = eqtn.split(' -> ')[0].split(' + ')[1]
+        dst = eqtn.split(' -> ')[1]        
+        return '%s = %s + %s' % (dst, src1, src2)
     elif opc == 'xor':
         src1 = eqtn.split(' -> ')[0].split(' + ')[0]
         src2 = eqtn.split(' -> ')[0].split(' + ')[1]
@@ -69,6 +74,10 @@ def asmZ3(solver, vrs, cnst, invert=False):
         r1 = right.split(' - ')[0]
         r2 = right.split(' - ')[1]
         solver.add(getZ3(left) == getZ3(r1) - getZ3(r2))
+    elif ' + ' in right:
+        r1 = right.split(' + ')[0]
+        r2 = right.split(' + ')[1]
+        solver.add(getZ3(left) == getZ3(r1) + getZ3(r2))
     elif ' & ' in right:
         r1 = right.split(' & ')[0]
         r2 = right.split(' & ')[1]
@@ -115,7 +124,7 @@ class FuzzedProgram:
         for l in data:
             if l.startswith('br_'):
                 bid = l.split(":")[0]
-                instr = l.split(":")[1][1:].split(" - ")[0]
+                instr = l.split(":")[1][1:].split("(")[0].strip()
                 var = l.split(":")[1][1:].split(" - ")[1]
                 branchStrings.append((bid, asmInstruction(instr, var)))
             elif l.startswith('  '):
