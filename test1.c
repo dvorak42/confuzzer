@@ -15,11 +15,11 @@ int main(void)
 {
   char key[] = "magic";
   int fd = 0;
-  char buf[256] = {0};
+  char buf[16] = {0};
   char *r = buf;
 
   fd = open("key.txt", O_RDONLY);
-  read(fd, r, 256);
+  read(fd, r, 16);
   close(fd);
 
   if(strcmp2(key, r) == 0) {

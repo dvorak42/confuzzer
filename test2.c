@@ -8,11 +8,11 @@ int main(void)
   char key[] = "\x4f\x43\x45\x4b\x41";
   int fd = 0;
   int i = 0;
-  char buf[256] = {0};
+  char buf[16] = {0};
   char *r = buf;
 
   fd = open("key.txt", O_RDONLY);
-  read(fd, r, 256);
+  read(fd, r, 16);
   close(fd);
 
   while(i < 5) {
