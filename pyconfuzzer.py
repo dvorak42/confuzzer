@@ -2,92 +2,10 @@
 import subprocess
 import z3
 
-def asmInstruction(instr, eqtn):
-    opc = instr.split(" ")[0]
-    if instr.startswith('External Taint'):
-        src = eqtn.split(' -> ')[0]
-        dst = eqtn.split(' -> ')[1]
-        return '%s = %s' % (dst, '$E%s' % src.replace('EXT_', ''))
-    if opc == 'jnz':
-        return '%s != 0' % eqtn
-    elif opc == 'jz':
-        return '%s == 0' % eqtn
-    elif opc.startswith('mov') or opc == 'push' or opc == 'pop':
-        src = eqtn.split(' -> ')[0]
-        dst = eqtn.split(' -> ')[1]
-        return '%s = %s' % (dst, src)
-    elif opc == 'cmp':
-        src1 = eqtn.split(' -> ')[0].split(' + ')[0]
-        src2 = eqtn.split(' -> ')[0].split(' + ')[1]
-        dst = eqtn.split(' -> ')[1]        
-        return '%s = %s - %s' % (dst, src2, src1)
-    elif opc == 'test':
-        src1 = eqtn.split(' -> ')[0].split(' + ')[0]
-        src2 = eqtn.split(' -> ')[0].split(' + ')[1]
-        dst = eqtn.split(' -> ')[1]        
-        return '%s = %s & %s' % (dst, src1, src2)
-    elif opc == 'sub':
-        src1 = eqtn.split(' -> ')[0].split(' + ')[0]
-        src2 = eqtn.split(' -> ')[0].split(' + ')[1]
-        dst = eqtn.split(' -> ')[1]        
-        return '%s = %s - %s' % (dst, src1, src2)
-    elif opc == 'add':
-        src1 = eqtn.split(' -> ')[0].split(' + ')[0]
-        src2 = eqtn.split(' -> ')[0].split(' + ')[1]
-        dst = eqtn.split(' -> ')[1]        
-        return '%s = %s + %s' % (dst, src1, src2)
-    elif opc == 'xor':
-        src1 = eqtn.split(' -> ')[0].split(' + ')[0]
-        src2 = eqtn.split(' -> ')[0].split(' + ')[1]
-        dst = eqtn.split(' -> ')[1]        
-        return '%s = %s ^ %s' % (dst, src1, src2)
-        
-    print "Unknown instruction: %s (%s)" % (instr, eqtn)
-    return ""
+import parser
+import master
 
-def asmZ3(solver, vrs, cnst, invert=False):
-    def getZ3(v):
-        if v in vrs:
-            return vrs[v]
-        else:
-            try:
-                return int(v, 16)
-            except:
-                print 'Unknown: %s' % v
-
-    if ' == ' in cnst:
-        left = cnst.split(" == ")[0]
-        right = cnst.split(" == ")[1]
-        if invert:
-            return solver.add(getZ3(left) != getZ3(right))
-        return solver.add(getZ3(left) == getZ3(right))
-    elif ' != ' in cnst:
-        left = cnst.split(" != ")[0]
-        right = cnst.split(" != ")[1]
-        if invert:
-            return solver.add(getZ3(left) == getZ3(right))
-        return solver.add(getZ3(left) != getZ3(right))
-
-    left = cnst.split(" = ")[0]
-    right = cnst.split(" = ")[1]
-    if ' - ' in right:
-        r1 = right.split(' - ')[0]
-        r2 = right.split(' - ')[1]
-        solver.add(getZ3(left) == getZ3(r1) - getZ3(r2))
-    elif ' + ' in right:
-        r1 = right.split(' + ')[0]
-        r2 = right.split(' + ')[1]
-        solver.add(getZ3(left) == getZ3(r1) + getZ3(r2))
-    elif ' & ' in right:
-        r1 = right.split(' & ')[0]
-        r2 = right.split(' & ')[1]
-        solver.add(getZ3(left) == getZ3(r1) & getZ3(r2))
-    elif ' ^ ' in right:
-        r1 = right.split(' ^ ')[0]
-        r2 = right.split(' ^ ')[1]
-        solver.add(getZ3(left) == getZ3(r1) ^ getZ3(r2))
-    else:
-        solver.add(getZ3(left) == getZ3(right))
+# TODO: Hook into Server
 
 class FuzzedProgram:
     program = None
@@ -106,15 +24,17 @@ class FuzzedProgram:
         self.value = val
 
     def step(self):
-        f = open(self.tainted[0][1], 'w')
-        f.write(self.value)
-        f.close()
+        master.assignTask({'program': self.program, 'args': ['-tainted-input', self.getTainted()], 'inputs': {self.tainted[0][1]: self.value.encode('hex')}})
+        #f = open(self.tainted[0][1], 'w')
+        #f.write(self.value)
+        #f.close()
 
-        pinCmd = ['pin', '-t', 'confuzzer.so', '-tainted-input', self.getTainted(), '--']
-        subprocess.call(pinCmd + self.program)
+        #pinCmd = ['pin', '-t', 'confuzzer.so', '-tainted-input', self.getTainted(), '--']
+        #subprocess.call(pinCmd + self.program)
+        #self.data = open('execution.dat').read().split('\n')
 
     def process(self):
-        data = open('execution.dat').read().split('\n')
+        data = master.getResult().split('\n')
         branchStrings = []
         constraintStrings = []
         solver = z3.Solver()
@@ -126,20 +46,19 @@ class FuzzedProgram:
                 bid = l.split(":")[0]
                 instr = l.split(":")[1][1:].split("(")[0].strip()
                 var = l.split(":")[1][1:].split(" - ")[1]
-                branchStrings.append((bid, asmInstruction(instr, var)))
+                branchStrings.append((bid, parser.asmInstruction(instr, var)))
             elif l.startswith('  '):
                 var = l.split(":")[0].strip()
                 if not var in vrs:
                     vrs[var] = z3.BitVec(var, 32)
                 instr = l.split(":")[1][1:].split("(")[0].strip()
                 eqtn = l.split(" - ")[-1].strip()
-                constraintStrings.append((var, asmInstruction(instr, eqtn)))
+                constraintStrings.append((var, parser.asmInstruction(instr, eqtn)))
         for (v,c) in constraintStrings:
-            asmZ3(solver, vrs, c)
+            parser.asmZ3(solver, vrs, c)
         for (b,c) in branchStrings:
-            asmZ3(solver, vrs, c)
-        #print solver.assertions()
-        solver.check()
+            parser.asmZ3(solver, vrs, c)
+        print solver.check()
         valM = {}
         m = solver.model()
         for v in m:
