@@ -9,7 +9,7 @@ tasks = Queue()
 results = Queue()
 
 def worker(host, port=7331):
-    print "http://%s:%d/" % (host, port)
+    #print "http://%s:%d/" % (host, port)
     w = xmlrpclib.ServerProxy("http://%s:%d/" % (host, port))
     while True:
         task = tasks.get(True)

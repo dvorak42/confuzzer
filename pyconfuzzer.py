@@ -79,8 +79,6 @@ class FuzzedProgram:
                 continue
 
             (bS, cS, vrs) = self.parse(data)
-            print bS
-            print cS
             for bi in range(len(bS)):
                 solver = z3.Solver()
                 for (v,cf) in cS:

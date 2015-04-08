@@ -42,13 +42,48 @@ int main(int argc, char* argv[]) {
 }
 
 void trackInstruction(UINT64 addr, std::string instr) {
-  std::cout << "0x" << std::hex << addr << " - " << instr << std::endl;
+  //std::cout << "0x" << std::hex << addr << " - " << instr << std::endl;
 }
 
 UINT64 branchID = 0;
 std::list<string> branchData;
 
 void trackJump(CONTEXT* ctxt, UINT64 addr, std::string instr) {
+  if(isRegisterTainted(REG_RFLAGS) || isRegisterTainted(REG_EFLAGS) || isRegisterTainted(REG_FLAGS)) {
+    //std::cout << "Tainted Jump: " << std::hex << addr << " - " << instr << " (" << getRegID(REG_RFLAGS) << ")" <<std::endl;
+    //std::cout << printTaint() << std::endl;
+
+    branchID += 1;
+
+    // branchID (ADDRESS - INSTRUCTION) = MAIN_CONSTRAINT
+    // CONSTRAINTS
+
+    std::stringstream branch;
+    branch << "br_" << std::setw(8) << std::hex << std::setfill('0') << addr << "_" << branchID;
+    branch << ": " << instr;
+
+    UINT8 val;
+    PIN_GetContextRegval(ctxt, REG_RFLAGS, (UINT8*)&val);
+    std::stringstream stream;
+    std::bitset<16> x(val);
+    stream << x;
+    branch << " (" << stream.str() << ")";
+    branch << " - " << getRegID(REG_RFLAGS) << std::endl;      
+
+    // if(instr.compare(0, 3, string("jnz")) == 0) {
+    //   branch << " - " << getRegID(REG_RFLAGS) << "_JNZ" << std::endl;      
+    // } else if(instr.compare(0, 2, string("jz")) == 0) {
+    //   branch << " - " << getRegID(REG_RFLAGS) << "_JZ" << std::endl;      
+    // } else {
+    //   std::cerr << "Unknown Jump: " << instr.substr(0, instr.find(" ")) << std::endl;
+    // }
+
+    //branch << getConstraints() << std::endl;
+    branchData.push_back(branch.str());
+  }
+}
+
+void trackPredicate(CONTEXT* ctxt, UINT64 addr, std::string instr) {
   if(isRegisterTainted(REG_RFLAGS) || isRegisterTainted(REG_EFLAGS) || isRegisterTainted(REG_FLAGS)) {
     //std::cout << "Tainted Jump: " << std::hex << addr << " - " << instr << " (" << getRegID(REG_RFLAGS) << ")" <<std::endl;
     //std::cout << printTaint() << std::endl;
@@ -102,9 +137,17 @@ void instrument(INS instruction, void* v) {
       // Direct Jumps
     }
   } else if(INS_OperandCount(instruction) > 1) {
+    if(INS_IsPredicated(instruction)) {
+      INS_InsertCall(instruction, IPOINT_BEFORE, (AFUNPTR)trackPredicate,
+		     IARG_CONTEXT,
+		     IARG_ADDRINT, INS_Address(instruction),
+		     IARG_PTR, new std::string(INS_Disassemble(instruction)),
+		     IARG_END);
+    }
+
     if(INS_MemoryOperandIsRead(instruction, 0) && INS_OperandIsReg(instruction, 0)) {
       // MEM -> REG
-      INS_InsertCall(instruction, IPOINT_BEFORE, (AFUNPTR)taintMemToReg,
+      INS_InsertPredicatedCall(instruction, IPOINT_BEFORE, (AFUNPTR)taintMemToReg,
 		     IARG_CONTEXT,
 		     IARG_ADDRINT, INS_Address(instruction),
 		     IARG_PTR, new std::string(INS_Disassemble(instruction)),		     
@@ -114,8 +157,7 @@ void instrument(INS instruction, void* v) {
       // TODO: Advance Dest Register ID
     } else if(INS_MemoryOperandIsWritten(instruction, 0)) {
       // REG -> MEM
-
-      INS_InsertCall(instruction, IPOINT_BEFORE, (AFUNPTR)taintRegToMem,
+      INS_InsertPredicatedCall(instruction, IPOINT_BEFORE, (AFUNPTR)taintRegToMem,
 		     IARG_CONTEXT,
 		     IARG_ADDRINT, INS_Address(instruction),
 		     IARG_PTR, new std::string(INS_Disassemble(instruction)),		     
@@ -124,7 +166,7 @@ void instrument(INS instruction, void* v) {
 		     IARG_END);
     } else if(INS_OperandIsReg(instruction, 0) && INS_OperandCount(instruction) > 2 && INS_RegR(instruction, 0) && INS_RegR(instruction, 1) && INS_RegW(instruction, 0)) {
       // REG -> REG
-      INS_InsertCall(instruction, IPOINT_BEFORE, (AFUNPTR)taintReg2ToReg,
+      INS_InsertPredicatedCall(instruction, IPOINT_BEFORE, (AFUNPTR)taintReg2ToReg,
 		     IARG_CONTEXT,
 		     IARG_ADDRINT, INS_Address(instruction),
 		     IARG_PTR, new std::string(INS_Disassemble(instruction)),		     
@@ -135,7 +177,7 @@ void instrument(INS instruction, void* v) {
       // TODO: Advance Dest Register ID
     } else if(INS_OperandIsReg(instruction, 0) && INS_RegR(instruction, 0) && INS_RegW(instruction, 0) && INS_OperandIsImmediate(instruction, 1)) {
       // REG + CONSTANT -> REG
-      INS_InsertCall(instruction, IPOINT_BEFORE, (AFUNPTR)taintRegConstantToReg,
+      INS_InsertPredicatedCall(instruction, IPOINT_BEFORE, (AFUNPTR)taintRegConstantToReg,
 		     IARG_CONTEXT,
 		     IARG_ADDRINT, INS_Address(instruction),
 		     IARG_PTR, new std::string(INS_Disassemble(instruction)),		     
@@ -146,7 +188,7 @@ void instrument(INS instruction, void* v) {
       // TODO: Advance Dest Register ID
     } else if(INS_OperandIsReg(instruction, 0) && INS_RegR(instruction, 0) && INS_RegW(instruction, 0)) {
       // REG -> REG
-      INS_InsertCall(instruction, IPOINT_BEFORE, (AFUNPTR)taintRegToReg,
+      INS_InsertPredicatedCall(instruction, IPOINT_BEFORE, (AFUNPTR)taintRegToReg,
 		     IARG_CONTEXT,
 		     IARG_ADDRINT, INS_Address(instruction),
 		     IARG_PTR, new std::string(INS_Disassemble(instruction)),		     
@@ -156,7 +198,7 @@ void instrument(INS instruction, void* v) {
       // TODO: Advance Dest Register ID
     } else if(INS_OperandIsReg(instruction, 0)) {
       // Constant -> REG
-      INS_InsertCall(instruction, IPOINT_BEFORE, (AFUNPTR)taintConstantToReg,
+      INS_InsertPredicatedCall(instruction, IPOINT_BEFORE, (AFUNPTR)taintConstantToReg,
 		     IARG_CONTEXT,
 		     IARG_ADDRINT, INS_Address(instruction),
 		     IARG_PTR, new std::string(INS_Disassemble(instruction)),
@@ -164,7 +206,7 @@ void instrument(INS instruction, void* v) {
 		     IARG_END);
     } else if(INS_MemoryOperandIsRead(instruction, 0)) {
       // MEM -> REG
-      INS_InsertCall(instruction, IPOINT_BEFORE, (AFUNPTR)taintMemToReg,
+      INS_InsertPredicatedCall(instruction, IPOINT_BEFORE, (AFUNPTR)taintMemToReg,
 		     IARG_CONTEXT,
 		     IARG_ADDRINT, INS_Address(instruction),
 		     IARG_PTR, new std::string(INS_Disassemble(instruction)),		     
