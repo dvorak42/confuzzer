@@ -1,5 +1,13 @@
 #!/usr/bin/python
 
+def asmBranch(instr, state):
+    opc = instr.split(" ")[0]
+    if opc == 'jnz':
+        return state[::-1][6] != '0'
+    elif opc == 'jz':
+        return state[::-1][6] == '0'
+    
+
 def asmInstruction(instr, eqtn):
     opc = instr.split(" ")[0]
     if instr.startswith('External Taint'):

@@ -42,7 +42,7 @@ int main(int argc, char* argv[]) {
 }
 
 void trackInstruction(UINT64 addr, std::string instr) {
-  //std::cout << "0x" << std::hex << addr << " - " << instr << std::endl;
+  std::cout << "0x" << std::hex << addr << " - " << instr << std::endl;
 }
 
 UINT64 branchID = 0;

@@ -25,7 +25,7 @@ def runTask(program, args, inputs):
 
 
     pinCmd = ['pin', '-t', '../../confuzzer.so'] + args + ['--'] + program
-    print pinCmd
+    print inputs, pinCmd
     for k,v in inputs.iteritems():
         f = open(k, 'w')
         f.write(v.decode('hex'))

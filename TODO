@@ -1,6 +1,6 @@
 * Pyfuzz
 
 * Conexec
- Add CONTEXT to all functions to get non-tainted register state
- Use PIN_SafeCopy to get values of non-tainted memory
+  * Deal with CMOV
+
 * Branchdot

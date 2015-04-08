@@ -13,19 +13,18 @@ def worker(host, port=7331):
     w = xmlrpclib.ServerProxy("http://%s:%d/" % (host, port))
     while True:
         task = tasks.get(True)
-        print task
         response = w.runTask(task['program'], task['args'], task['inputs'])
-        results.put(response)
+        results.put((task['path'], response))
         tasks.task_done()
 
 def assignTask(data):
     tasks.put(data)
 
 def getResult():
-    data = results.get(True)
-    data = data.split('========', 1)[1].strip()
+    (path, data) = results.get(True)
+    data = data.split('========', 1)[1].strip().split('\n')
     results.task_done()
-    return data
+    return (path, data)
 
 def startWorkers():
     for (h,p) in WORKERS:
