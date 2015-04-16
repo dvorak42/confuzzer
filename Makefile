@@ -14,11 +14,8 @@ OBJS	:= confuzzer.o taint.o stringifier.o
 %.so: %.o $(OBJS)
 	$(CXX) -shared -Wl,--hash-style=sysv -Wl,-Bsymbolic -Wl,--version-script=$(VERSION_SCRIPT) $(foreach d, $(LIBDIRS), -L$d) $(OBJS) -o $@ $(LIBS)
 
-test1: test1.c
-	$(CC) $< -o $@
-
-test2: test2.c
-	$(CC) $< -o $@
+test%: test%.c
+	$(CC) $< -mno-sse -mno-sse2 -static -o $@
 
 clean:
 	rm -f *.so *.o *.d pin.log test1 test2

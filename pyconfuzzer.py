@@ -4,7 +4,7 @@ import z3
 
 import parser
 import master
-
+import viewer
 # TODO: Hook into Server
 
 class FuzzedProgram:
@@ -79,6 +79,8 @@ class FuzzedProgram:
                 continue
 
             (bS, cS, vrs) = self.parse(data)
+            self.paths[pathID] = bS
+            viewer.drawGraph(self.paths)
             for bi in range(len(bS)):
                 solver = z3.Solver()
                 for (v,cf) in cS:
@@ -106,7 +108,6 @@ class FuzzedProgram:
                     if value not in self.queued and value not in self.completed and value != pathID:
                         print self.iters, value
                         self.send(value, value) 
-                    self.paths[value] = bS
             self.completed[pathID] = data
             
 
@@ -124,7 +125,9 @@ class FuzzedProgram:
 
 def run(program, taintedInput):
     print "Testing %s with tainted input %s" % (program, taintedInput)
+    viewer.startGraph()
     fp = FuzzedProgram(program, taintedInput)
     fp.setInput('')
     fp.process()
     print fp.paths.keys()
+    viewer.drawGraph(fp.paths, True)

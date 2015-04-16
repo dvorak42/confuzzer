@@ -12,40 +12,40 @@ def asmInstruction(instr, eqtn):
     opc = instr.split(" ")[0]
     if instr.startswith('External Taint'):
         src = eqtn.split(' -> ')[0]
-        dst = eqtn.split(' -> ')[1]
+        dst = eqtn.split(' -> ')[1].split(' ')[0]
         return '%s = %s' % (dst, '$E%s' % src.replace('EXT_', ''))
     if opc == 'jnz':
-        return '%s != 0' % eqtn
+        return '%s != 0' % eqtn.split(' ')[0]
     elif opc == 'jz':
-        return '%s == 0' % eqtn
+        return '%s == 0' % eqtn.split(' ')[0]
     elif opc.startswith('mov') or opc == 'push' or opc == 'pop':
         src = eqtn.split(' -> ')[0]
-        dst = eqtn.split(' -> ')[1]
+        dst = eqtn.split(' -> ')[1].split(' ')[0]
         return '%s = %s' % (dst, src)
     elif opc == 'cmp':
         src1 = eqtn.split(' -> ')[0].split(' + ')[0]
         src2 = eqtn.split(' -> ')[0].split(' + ')[1]
-        dst = eqtn.split(' -> ')[1]        
+        dst = eqtn.split(' -> ')[1].split(' ')[0]
         return '%s = %s - %s' % (dst, src2, src1)
     elif opc == 'test':
         src1 = eqtn.split(' -> ')[0].split(' + ')[0]
         src2 = eqtn.split(' -> ')[0].split(' + ')[1]
-        dst = eqtn.split(' -> ')[1]        
+        dst = eqtn.split(' -> ')[1].split(' ')[0]
         return '%s = %s & %s' % (dst, src1, src2)
     elif opc == 'sub':
         src1 = eqtn.split(' -> ')[0].split(' + ')[0]
         src2 = eqtn.split(' -> ')[0].split(' + ')[1]
-        dst = eqtn.split(' -> ')[1]        
+        dst = eqtn.split(' -> ')[1].split(' ')[0]
         return '%s = %s - %s' % (dst, src1, src2)
     elif opc == 'add':
         src1 = eqtn.split(' -> ')[0].split(' + ')[0]
         src2 = eqtn.split(' -> ')[0].split(' + ')[1]
-        dst = eqtn.split(' -> ')[1]        
+        dst = eqtn.split(' -> ')[1].split(' ')[0]
         return '%s = %s + %s' % (dst, src1, src2)
     elif opc == 'xor':
         src1 = eqtn.split(' -> ')[0].split(' + ')[0]
         src2 = eqtn.split(' -> ')[0].split(' + ')[1]
-        dst = eqtn.split(' -> ')[1]        
+        dst = eqtn.split(' -> ')[1].split(' ')[0]
         return '%s = %s ^ %s' % (dst, src1, src2)
         
     print "Unknown instruction: %s (%s)" % (instr, eqtn)

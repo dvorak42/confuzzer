@@ -1,3 +1,4 @@
+#include "pin.H"
 #include <sys/types.h>
 
 void addRegisterTaint(REG);
@@ -11,8 +12,8 @@ std::string getConstraints();
 std::string getRegID(REG);
 std::string getMemID(UINT64);
 void addExternalTaint(UINT64, UINT64);
-void taintMemToReg(CONTEXT*, UINT64, std::string, UINT64, REG);
-void taintRegToMem(CONTEXT*, UINT64, std::string, REG, UINT64);
+void taintMemToReg(CONTEXT*, UINT64, std::string, UINT64, REG, UINT32);
+void taintRegToMem(CONTEXT*, UINT64, std::string, REG, UINT64, UINT32);
 void taintRegToReg(CONTEXT*, UINT64, std::string, REG, REG);
 void taintRegConstantToReg(CONTEXT*, UINT64, std::string, REG, ADDRINT, REG);
 void taintConstantToReg(CONTEXT*, UINT64, std::string, REG);

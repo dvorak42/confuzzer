@@ -33,6 +33,22 @@ static REG regs[] = {
   REG_RSP , REG_ESP , REG_SP  , (REG)0  , (REG)0, 
   REG_RIP , REG_EIP , REG_IP  , (REG)0  , (REG)0, 
   REG_RFLAGS, REG_EFLAGS, REG_FLAGS, (REG)0, (REG)0, 
+  REG_XMM0, (REG)0  , (REG)0  , (REG)0  , (REG)0,
+  REG_XMM1, (REG)0  , (REG)0  , (REG)0  , (REG)0,
+  REG_XMM2, (REG)0  , (REG)0  , (REG)0  , (REG)0,
+  REG_XMM3, (REG)0  , (REG)0  , (REG)0  , (REG)0,
+  REG_XMM4, (REG)0  , (REG)0  , (REG)0  , (REG)0,
+  REG_XMM5, (REG)0  , (REG)0  , (REG)0  , (REG)0,
+  REG_XMM6, (REG)0  , (REG)0  , (REG)0  , (REG)0,
+  REG_XMM7, (REG)0  , (REG)0  , (REG)0  , (REG)0,
+  REG_XMM8, (REG)0  , (REG)0  , (REG)0  , (REG)0,
+  REG_XMM9, (REG)0  , (REG)0  , (REG)0  , (REG)0,
+  REG_XMM10, (REG)0  , (REG)0  , (REG)0  , (REG)0,
+  REG_XMM11, (REG)0  , (REG)0  , (REG)0  , (REG)0,
+  REG_XMM12, (REG)0  , (REG)0  , (REG)0  , (REG)0,
+  REG_XMM13, (REG)0  , (REG)0  , (REG)0  , (REG)0,
+  REG_XMM14, (REG)0  , (REG)0  , (REG)0  , (REG)0,
+  REG_XMM15, (REG)0  , (REG)0  , (REG)0  , (REG)0,
 };
 
 string hexifyAddr(UINT64 v) {
@@ -47,19 +63,28 @@ string hexify(UINT64 v) {
   return stream.str();
 }
 
-string getValue(CONTEXT* ctxt, REG reg) {
-  UINT8 val;
+// TODO: Add size of target for multiple
+string getValue(CONTEXT* ctxt, REG reg, UINT32 size) {
+  PIN_REGISTER val;
   PIN_GetContextRegval(ctxt, reg, (UINT8*)&val);
+
   std::stringstream stream;
-  stream << "0x" << std::hex << std::setfill('0') << int(val);
+  stream << "0x" << std::hex;
+  for(UINT32 i = 0; i < size; i++) {
+    stream  << std::setw(2) << std::setfill('0') << val.word[size - i - 1];
+  }
+
   return std::string(stream.str());
 }
 
-string getValue(CONTEXT* ctxt, UINT64 addr) {
-  char buffer[1];
-  PIN_SafeCopy(buffer, (ADDRINT*)addr, 1);
+string getValue(CONTEXT* ctxt, UINT64 addr, UINT32 size) {
+  char buffer[size];
+  PIN_SafeCopy(buffer, (ADDRINT*)addr, size);
   std::stringstream stream;
-  stream << "0x" << std::hex << std::setfill('0') << int(buffer[0]);
+  stream << "0x" << std::hex;
+  for(UINT32 i = 0; i < size; i++) {
+    stream << std::setw(2) << std::setfill('0') << int(buffer[size - i - 1]);
+  }
   return std::string(stream.str());
 }
 
@@ -183,7 +208,7 @@ std::string getConstraints() {
   return constraints.str();
 }
 
-void taintMemToReg(CONTEXT* ctxt, UINT64 instructionAddr, std::string instruction, UINT64 memAddr, REG reg) {
+void taintMemToReg(CONTEXT* ctxt, UINT64 instructionAddr, std::string instruction, UINT64 memAddr, REG reg, UINT32 memSize) {
   if(!isMemoryTainted(memAddr)) {
     removeRegisterTaint(reg);
     return;
@@ -192,14 +217,14 @@ void taintMemToReg(CONTEXT* ctxt, UINT64 instructionAddr, std::string instructio
   if(!registerID.count(br)) {
     registerID[br] = 0;
   }
-  taintEquations[getNextRegID(br)] = instruction + " " + "(" + getValue(ctxt, memAddr) + "->" + getNextRegID(br) + ") - " + getMemID(memAddr) + " -> " + getNextRegID(br);
+  taintEquations[getNextRegID(br)] = instruction + " " + "(" + getValue(ctxt, memAddr, memSize) + "->" + getNextRegID(br) + ") - " + getMemID(memAddr) + " -> " + getNextRegID(br) + " (" + std::to_string(memSize) + ")";
   registerID[br] = registerID[br] + 1;
   if(isRegisterTainted(reg))
     return;
   addRegisterTaint(reg);
 }
 
-void taintRegToMem(CONTEXT* ctxt, UINT64 instructionAddr, std::string instruction, REG reg, UINT64 memAddr) {
+void taintRegToMem(CONTEXT* ctxt, UINT64 instructionAddr, std::string instruction, REG reg, UINT64 memAddr, UINT32 memSize) {
   if(!isRegisterTainted(reg)) {
     removeMemoryTaint(memAddr);
     return;
@@ -209,7 +234,7 @@ void taintRegToMem(CONTEXT* ctxt, UINT64 instructionAddr, std::string instructio
   }
   REG br = baseRegister(reg);
 
-  taintEquations[getNextMemID(memAddr)] = instruction + " " + "(" + getValue(ctxt, br) + "->" + getNextMemID(memAddr) + ") - " + getRegID(br) + " -> " + getNextMemID(memAddr);
+  taintEquations[getNextMemID(memAddr)] = instruction + " " + "(" + getValue(ctxt, br, REG_Size(reg)) + "->" + getNextMemID(memAddr) + ") - " + getRegID(br) + " -> " + getNextMemID(memAddr) + " (" + std::to_string(memSize) + ")";
   addressID[memAddr] = addressID[memAddr] + 1;
 
   if(isMemoryTainted(memAddr))
@@ -227,7 +252,7 @@ void taintRegToReg(CONTEXT* ctxt, UINT64 instructionAddr, std::string instructio
   if(!registerID.count(brDst)) {
     registerID[brDst] = 0;
   }
-  taintEquations[getNextRegID(brDst)] = instruction + " " + "(" + getValue(ctxt, brSrc) + "->" + getNextRegID(brDst) + ") - " + getRegID(brSrc) + " -> " + getNextRegID(brDst);
+  taintEquations[getNextRegID(brDst)] = instruction + " " + "(" + getValue(ctxt, brSrc, REG_Size(regSrc)) + "->" + getNextRegID(brDst) + ") - " + getRegID(brSrc) + " -> " + getNextRegID(brDst);
   registerID[brDst] = registerID[brDst] + 1;
   if(isRegisterTainted(regDst))
     return;
@@ -245,7 +270,7 @@ void taintRegConstantToReg(CONTEXT* ctxt, UINT64 instructionAddr, std::string in
     registerID[brDst] = 0;
   }
   string ch = hexify(cnst);
-  taintEquations[getNextRegID(brDst)] = instruction + " " + "(" + getValue(ctxt, brSrc) + "+" +  ch + "->" + getNextRegID(brDst) + ") - " + getRegID(brSrc) + " + " + ch + " -> " + getNextRegID(brDst);
+  taintEquations[getNextRegID(brDst)] = instruction + " " + "(" + getValue(ctxt, brSrc, REG_Size(regSrc)) + "+" +  ch + "->" + getNextRegID(brDst) + ") - " + getRegID(brSrc) + " + " + ch + " -> " + getNextRegID(brDst);
   registerID[brDst] = registerID[brDst] + 1;
   if(isRegisterTainted(regDst))
     return;
@@ -269,11 +294,11 @@ void taintReg2ToReg(CONTEXT* ctxt, UINT64 instructionAddr, std::string instructi
     registerID[brDst] = 0;
   }
   if(isRegisterTainted(regSrc1) && isRegisterTainted(regSrc2)) {
-    taintEquations[getNextRegID(brDst)] = instruction + " " + "(" + getValue(ctxt, brSrc1) + "+" + getValue(ctxt, brSrc2) + "->" + getNextRegID(brDst) + ") - " + getRegID(brSrc1) + + " + " + getRegID(brSrc2) + " -> " + getNextRegID(brDst);
+    taintEquations[getNextRegID(brDst)] = instruction + " " + "(" + getValue(ctxt, brSrc1, REG_Size(regSrc1)) + "+" + getValue(ctxt, brSrc2, REG_Size(regSrc2)) + "->" + getNextRegID(brDst) + ") - " + getRegID(brSrc1) + + " + " + getRegID(brSrc2) + " -> " + getNextRegID(brDst);
   } else if(isRegisterTainted(regSrc1)) {
-    taintEquations[getNextRegID(brDst)] = instruction + " " + "(" + getValue(ctxt, brSrc1) + "+" + getValue(ctxt, brSrc2) + "->" + getNextRegID(brDst) + ") - " + getRegID(brSrc1) + + " + " + getValue(ctxt, brSrc2) + " -> " + getNextRegID(brDst);
+    taintEquations[getNextRegID(brDst)] = instruction + " " + "(" + getValue(ctxt, brSrc1, REG_Size(regSrc1)) + "+" + getValue(ctxt, brSrc2, REG_Size(regSrc2)) + "->" + getNextRegID(brDst) + ") - " + getRegID(brSrc1) + + " + " + getValue(ctxt, brSrc2, REG_Size(regSrc2)) + " -> " + getNextRegID(brDst);
   } else {
-    taintEquations[getNextRegID(brDst)] = instruction + " " + "(" + getValue(ctxt, brSrc1) + "+" + getValue(ctxt, brSrc2) + "->" + getNextRegID(brDst) + ") - " + getValue(ctxt, brSrc1) + + " + " + getRegID(brSrc2) + " -> " + getNextRegID(brDst);
+    taintEquations[getNextRegID(brDst)] = instruction + " " + "(" + getValue(ctxt, brSrc1, REG_Size(regSrc1)) + "+" + getValue(ctxt, brSrc2, REG_Size(regSrc2)) + "->" + getNextRegID(brDst) + ") - " + getValue(ctxt, brSrc1, REG_Size(regSrc1)) + + " + " + getRegID(brSrc2) + " -> " + getNextRegID(brDst);
   }
   registerID[brDst] = registerID[brDst] + 1;
   if(isRegisterTainted(regDst))

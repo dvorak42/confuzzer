@@ -95,6 +95,24 @@ void StringifierSetup() {
   registerNames[REG_FLAGS] = "FLAGS";
   registerNames[REG_SI] = "SI";
   registerNames[REG_DI] = "DI";
+
+  registerNames[REG_XMM0] = "XMM0";
+  registerNames[REG_XMM1] = "XMM1";
+  registerNames[REG_XMM2] = "XMM2";
+  registerNames[REG_XMM3] = "XMM3";
+  registerNames[REG_XMM4] = "XMM4";
+  registerNames[REG_XMM5] = "XMM5";
+  registerNames[REG_XMM6] = "XMM6";
+  registerNames[REG_XMM7] = "XMM7";
+  registerNames[REG_XMM8] = "XMM8";
+  registerNames[REG_XMM9] = "XMM9";
+  registerNames[REG_XMM10] = "XMM10";
+  registerNames[REG_XMM11] = "XMM11";
+  registerNames[REG_XMM12] = "XMM12";
+  registerNames[REG_XMM13] = "XMM13";
+  registerNames[REG_XMM14] = "XMM14";
+  registerNames[REG_XMM15] = "XMM15";
+  
 }
 
 std::string SyscallName(ADDRINT num) {

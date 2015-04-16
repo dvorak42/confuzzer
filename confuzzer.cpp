@@ -43,6 +43,7 @@ int main(int argc, char* argv[]) {
 
 void trackInstruction(UINT64 addr, std::string instr) {
   //std::cout << "0x" << std::hex << addr << " - " << instr << std::endl;
+  //std::cout << printTaint() << std::endl;
 }
 
 UINT64 branchID = 0;
@@ -148,21 +149,23 @@ void instrument(INS instruction, void* v) {
     if(INS_MemoryOperandIsRead(instruction, 0) && INS_OperandIsReg(instruction, 0)) {
       // MEM -> REG
       INS_InsertPredicatedCall(instruction, IPOINT_BEFORE, (AFUNPTR)taintMemToReg,
-		     IARG_CONTEXT,
-		     IARG_ADDRINT, INS_Address(instruction),
-		     IARG_PTR, new std::string(INS_Disassemble(instruction)),		     
-		     IARG_MEMORYOP_EA, 0,
-		     IARG_UINT32, INS_OperandReg(instruction, 0),
+			       IARG_CONTEXT,
+			       IARG_ADDRINT, INS_Address(instruction),
+			       IARG_PTR, new std::string(INS_Disassemble(instruction)),		     
+			       IARG_MEMORYOP_EA, 0,
+			       IARG_UINT32, INS_OperandReg(instruction, 0),
+			       IARG_UINT32, INS_MemoryReadSize(instruction),
 		     IARG_END);
       // TODO: Advance Dest Register ID
     } else if(INS_MemoryOperandIsWritten(instruction, 0)) {
       // REG -> MEM
       INS_InsertPredicatedCall(instruction, IPOINT_BEFORE, (AFUNPTR)taintRegToMem,
-		     IARG_CONTEXT,
-		     IARG_ADDRINT, INS_Address(instruction),
-		     IARG_PTR, new std::string(INS_Disassemble(instruction)),		     
-		     IARG_UINT32, INS_OperandReg(instruction, 0),
-		     IARG_MEMORYOP_EA, 0,
+			       IARG_CONTEXT,
+			       IARG_ADDRINT, INS_Address(instruction),
+			       IARG_PTR, new std::string(INS_Disassemble(instruction)),		     
+			       IARG_UINT32, INS_OperandReg(instruction, 0),
+			       IARG_MEMORYOP_EA, 0,
+			       IARG_UINT32, INS_MemoryWriteSize(instruction),
 		     IARG_END);
     } else if(INS_OperandIsReg(instruction, 0) && INS_OperandCount(instruction) > 2 && INS_RegR(instruction, 0) && INS_RegR(instruction, 1) && INS_RegW(instruction, 0)) {
       // REG -> REG
