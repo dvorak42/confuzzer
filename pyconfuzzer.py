@@ -14,6 +14,7 @@ class FuzzedProgram:
     value = ''
     completed = {}
     queued = []
+    problems = []
     
     def __init__(self, program, taintedInputs):
         self.program = program.split(' ')
@@ -77,7 +78,11 @@ class FuzzedProgram:
             self.queued.remove(pathID)
             if pathID in self.completed:
                 continue
-
+            if data[-1].strip() == 'SEGFAULT':
+                (bS, cS, vrs) = self.parse(data[:-1])
+                self.paths[pathID] = bS + [['SEGFAULT', pathID, '']]
+                self.problems.append(pathID)
+                continue
             (bS, cS, vrs) = self.parse(data)
             self.paths[pathID] = bS
             viewer.drawGraph(self.paths)
@@ -129,5 +134,9 @@ def run(program, taintedInput):
     fp = FuzzedProgram(program, taintedInput)
     fp.setInput('')
     fp.process()
-    print fp.paths.keys()
+    #print fp.paths.keys()
+    if fp.problems:
+        print "Crashing Inputs:"
+    for i in fp.problems:
+        print "\t%s" % i
     viewer.drawGraph(fp.paths, True)

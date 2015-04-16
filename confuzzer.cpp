@@ -1,5 +1,6 @@
 #include <asm/unistd.h>
 #include <bitset>
+#include <csignal>
 #include <iomanip>
 #include <iostream>
 #include <fstream>
@@ -17,6 +18,12 @@ void enterSyscall(THREADID, CONTEXT*, SYSCALL_STANDARD, void*);
 void exitSyscall(THREADID, CONTEXT*, SYSCALL_STANDARD, void*);
 void finalize(INT32, void*);
 
+bool crashed = false;
+bool catchSegfault(THREADID tid, INT32 sig, CONTEXT *ctxt, BOOL hasHandler, const EXCEPTION_INFO *pExceptInfo, VOID *v) {
+  crashed = true;
+  return true;
+}
+
 int main(int argc, char* argv[]) {
   if(PIN_Init(argc, argv)) {
     std::cout << "Invalid arguments for " << argv[0] << std::endl;
@@ -30,6 +37,7 @@ int main(int argc, char* argv[]) {
   PIN_SetSyntaxIntel();
   PIN_InitSymbols();
 
+  PIN_InterceptSignal(SIGSEGV, catchSegfault, 0);
   INS_AddInstrumentFunction(instrument, 0);
   PIN_AddSyscallEntryFunction(enterSyscall, 0);
   PIN_AddSyscallExitFunction(exitSyscall, 0);
@@ -276,5 +284,8 @@ void finalize(INT32 ret, void* v) {
   file << getConstraints() << std::endl;
   // TODO: Print Path Information
   // TODO: Print Path Constraints
+  if(crashed) {
+    file << "SEGFAULT" << std::endl;
+  }
   file.close();
 }

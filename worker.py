@@ -34,7 +34,9 @@ def runTask(program, args, inputs):
     subprocess.call(pinCmd)
 
     idnt = "%s:%s" % (socket.gethostname(), dr)
-    data = idnt + '\n========\n' + open('execution.dat').read()
+    
+    data = idnt + '\n========\n'
+    data += open('execution.dat').read()
     os.chdir(odr)
     return data
 
