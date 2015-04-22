@@ -1,24 +1,24 @@
 #!/usr/bin/python
 import xmlrpclib
-from Queue import Queue
+from Queue import Queue, PriorityQueue
 from threading import Thread
 
 WORKERS = [('localhost', 7331)]
 
-tasks = Queue()
+tasks = PriorityQueue()
 results = Queue()
 
 def worker(host, port=7331):
     #print "http://%s:%d/" % (host, port)
     w = xmlrpclib.ServerProxy("http://%s:%d/" % (host, port))
     while True:
-        task = tasks.get(True)
+        task = tasks.get(True)[1]
         response = w.runTask(task['program'], task['args'], task['inputs'])
         results.put((task['path'], response))
         tasks.task_done()
 
-def assignTask(data):
-    tasks.put(data)
+def assignTask(data, priority=100):
+    tasks.put((priority, data))
 
 def getResult():
     (path, data) = results.get(True)

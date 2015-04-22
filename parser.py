@@ -1,11 +1,15 @@
 #!/usr/bin/python
+import z3
 
 def asmBranch(instr, state):
     opc = instr.split(" ")[0]
+    rf = state[::-1]
     if opc == 'jnz':
-        return state[::-1][6] != '0'
+        return rf[6] != '0'
     elif opc == 'jz':
-        return state[::-1][6] == '0'
+        return rf[6] == '0'
+    elif opc == 'jl':
+        return rf[7] != rf[11]
     
 
 def asmInstruction(instr, eqtn):
@@ -18,6 +22,8 @@ def asmInstruction(instr, eqtn):
         return '%s != 0' % eqtn.split(' ')[0]
     elif opc == 'jz':
         return '%s == 0' % eqtn.split(' ')[0]
+    elif opc == 'jl':
+        return '%s < 0' % eqtn.split(' ')[0]
     elif opc.startswith('mov') or opc == 'push' or opc == 'pop':
         src = eqtn.split(' -> ')[0]
         dst = eqtn.split(' -> ')[1].split(' ')[0]
@@ -59,7 +65,7 @@ def asmZ3(solver, vrs, cnst, invert=False):
             try:
                 return int(v, 16)
             except:
-                print 'Unknown: %s' % v
+                vrs[v] = z3.BitVec(v, 32)
 
     if ' == ' in cnst:
         left = cnst.split(" == ")[0]
@@ -73,6 +79,13 @@ def asmZ3(solver, vrs, cnst, invert=False):
         if invert:
             return solver.add(getZ3(left) == getZ3(right))
         return solver.add(getZ3(left) != getZ3(right))
+    elif ' < ' in cnst:
+        left = cnst.split(" < ")[0]
+        right = cnst.split(" < ")[1]
+        if invert:
+            return solver.add(getZ3(left) >= getZ3(right))
+        return solver.add(getZ3(left) < getZ3(right))
+
 
     left = cnst.split(" = ")[0]
     right = cnst.split(" = ")[1]

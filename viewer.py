@@ -16,7 +16,7 @@ def drawGraph(data, final=False):
         for n in path:
             if '%s-%s' % (indx, n[0]) not in ids:
                 ids['%s-%s' % (indx, n[0])] = nextID
-                labels[nextID] = n[0] + ':\n  ' + n[1]
+                labels[nextID] = ('%s_%s' % (len(indx), n[0])) + ':\n  ' + n[1]
                 nextID += 1
             graph.append((ids[indx], ids['%s-%s' % (indx, n[0])]))
             edge_labels[graph[-1]] = str(prevNode[2])

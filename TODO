@@ -1,10 +1,4 @@
-* Pyfuzz
-
-* Conexec
-  * Deal with CMOV
-
-* Branchdot
-
-
+* Deal with CMOV
 * Deal with XMM registers
 
+* Create shell-ish test case.
