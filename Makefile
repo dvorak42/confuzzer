@@ -1,4 +1,4 @@
-all: confuzzer.so test1 test2 test3
+all: confuzzer.so test1 test2 test3 test4
 
 CFLAGS := -std=c++0x
 INCLUDE	:= $(PIN_PATH)/source/include/pin $(PIN_PATH)/source/include/pin/gen $(PIN_PATH)/extras/components/include $(PIN_PATH)/extras/xed2-intel64/include $(PIN_PATH)/source/tools/InstLib
