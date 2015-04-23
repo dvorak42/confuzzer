@@ -1,6 +1,8 @@
 * Deal with CMOV
 
 * Create shell-ish test case.
+* Deal with RFLAGS side-effects.
+
 * Deal with XMM registers
 Separate registers into 8-bit chunks. For each instruction, update all the parts of the register with either the new operation or REG_RAX1_8 = REG_RAX1_7, ...
 

@@ -1,14 +1,6 @@
 #include <stdio.h>
 #include <fcntl.h>
 
-int strcmp(char* a, char* b) {
-  while((*a == *b) && (*a != '\0')) {
-    a++;
-    b++;
-  }
-  return *a - *b;
-}
-
 int main(void)
 {
   int NC = 8;
