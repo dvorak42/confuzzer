@@ -26,7 +26,6 @@ def drawGraph(data, final=False):
     G = nx.DiGraph()
     for edge in graph:
         G.add_edge(edge[0], edge[1])
-
     graph_pos=nx.graphviz_layout(G,prog='dot')
     plt.clf()
     nx.draw_networkx_nodes(G, graph_pos, node_size=1600, alpha=0.3, node_color='blue')

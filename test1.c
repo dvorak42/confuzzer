@@ -31,7 +31,7 @@ int main(void)
   read(fd, r, 16);
   close(fd);
 
-  if(strcmp2(key, r) == 0) {
+  if(strcmp(key, r) == 0) {
     printf("Success!\n");
     return 0;
     //printf("Correct!\n");

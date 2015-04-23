@@ -3,7 +3,7 @@ import xmlrpclib
 from Queue import Queue, PriorityQueue
 from threading import Thread
 
-WORKERS = [('localhost', 7331)]
+WORKERS = [('localhost', 7331)]*8
 
 tasks = PriorityQueue()
 results = Queue()

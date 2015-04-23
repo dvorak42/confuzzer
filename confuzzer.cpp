@@ -175,7 +175,7 @@ void instrument(INS instruction, void* v) {
 			       IARG_MEMORYOP_EA, 0,
 			       IARG_UINT32, INS_MemoryWriteSize(instruction),
 		     IARG_END);
-    } else if(INS_OperandIsReg(instruction, 0) && INS_OperandCount(instruction) > 2 && INS_RegR(instruction, 0) && INS_RegR(instruction, 1) && INS_RegW(instruction, 0)) {
+    } else if(INS_OperandIsReg(instruction, 0) && INS_OperandCount(instruction) >= 2 && INS_RegR(instruction, 0) && INS_RegR(instruction, 1) && INS_RegW(instruction, 0)) {
       // REG -> REG
       INS_InsertPredicatedCall(instruction, IPOINT_BEFORE, (AFUNPTR)taintReg2ToReg,
 		     IARG_CONTEXT,
@@ -199,13 +199,23 @@ void instrument(INS instruction, void* v) {
       // TODO: Advance Dest Register ID
     } else if(INS_OperandIsReg(instruction, 0) && INS_RegR(instruction, 0) && INS_RegW(instruction, 0)) {
       // REG -> REG
-      INS_InsertPredicatedCall(instruction, IPOINT_BEFORE, (AFUNPTR)taintRegToReg,
-		     IARG_CONTEXT,
-		     IARG_ADDRINT, INS_Address(instruction),
-		     IARG_PTR, new std::string(INS_Disassemble(instruction)),		     
-		     IARG_UINT32, INS_RegR(instruction, 0),
-		     IARG_UINT32, INS_RegW(instruction, 0),
-		     IARG_END);
+      if((new std::string(INS_Disassemble(instruction)))->compare(0, 3, "bsf") == 0) {
+	INS_InsertPredicatedCall(instruction, IPOINT_BEFORE, (AFUNPTR)taintRegToReg,
+				 IARG_CONTEXT,
+				 IARG_ADDRINT, INS_Address(instruction),
+				 IARG_PTR, new std::string(INS_Disassemble(instruction)),    
+				 IARG_UINT32, INS_RegR(instruction, 0),
+				 IARG_UINT32, REG_RFLAGS,
+				 IARG_END);
+      } else {
+	INS_InsertPredicatedCall(instruction, IPOINT_BEFORE, (AFUNPTR)taintRegToReg,
+				 IARG_CONTEXT,
+				 IARG_ADDRINT, INS_Address(instruction),
+				 IARG_PTR, new std::string(INS_Disassemble(instruction)),    
+				 IARG_UINT32, INS_RegR(instruction, 0),
+				 IARG_UINT32, INS_RegW(instruction, 0),
+				 IARG_END);
+      }
       // TODO: Advance Dest Register ID
     } else if(INS_OperandIsReg(instruction, 0)) {
       // Constant -> REG

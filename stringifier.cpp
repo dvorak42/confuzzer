@@ -84,9 +84,11 @@ void StringifierSetup() {
   registerNames[REG_RBP] = "RBP";
   registerNames[REG_EBP] = "EBP";
   registerNames[REG_BP] = "BP";
+  registerNames[REG_BPL] = "BPL";
   registerNames[REG_RSP] = "RSP";
   registerNames[REG_ESP] = "ESP";
   registerNames[REG_SP] = "SP";
+  registerNames[REG_SPL] = "SPL";
   registerNames[REG_EIP] = "EIP";
   registerNames[REG_RIP] = "RIP";
   registerNames[REG_IP] = "IP";

@@ -7,12 +7,31 @@
 #include <sys/types.h>
 #include "stringifier.h"
 
-std::list<UINT64> taintedAddress;
-std::list<REG> taintedRegister;
-std::map<UINT64, UINT64> addressID;
-std::map<REG, UINT64> registerID;
-std::map<string, string> taintEquations;
+struct RegChunk {
+  REG reg;
+  UINT32 chunk;
 
+  bool operator<(const RegChunk& other) const {
+    if(this->reg < other.reg)
+      return true;
+    else if(this->reg > other.reg)
+      return false;
+    if(this->chunk < other.chunk)
+      return true;
+    return false;
+  }
+
+  bool operator==(const RegChunk& other) const {
+    bool r = this->reg == other.reg && this->chunk == other.chunk;
+    return r;
+  }
+};
+
+std::list<string> taintEquations;
+std::list<UINT64> taintedAddress;
+std::map<UINT64, UINT64> addressID;
+std::map<RegChunk, UINT64> registerID;
+std::list<RegChunk> taintedRegister;
 
 static REG regs[] = {
   REG_RDI , REG_EDI , REG_DI  , REG_DIL , (REG)0,
@@ -29,8 +48,8 @@ static REG regs[] = {
   REG_R13 , REG_R13D, REG_R13W, REG_R13B, (REG)0,
   REG_R14 , REG_R14D, REG_R14W, REG_R14B, (REG)0,
   REG_R15 , REG_R15D, REG_R15W, REG_R15B, (REG)0,
-  REG_RBP , REG_EBP , REG_BP  , (REG)0  , (REG)0, 
-  REG_RSP , REG_ESP , REG_SP  , (REG)0  , (REG)0, 
+  REG_RBP , REG_EBP , REG_BP  , REG_BPL , (REG)0, 
+  REG_RSP , REG_ESP , REG_SP  , REG_SPL , (REG)0, 
   REG_RIP , REG_EIP , REG_IP  , (REG)0  , (REG)0, 
   REG_RFLAGS, REG_EFLAGS, REG_FLAGS, (REG)0, (REG)0, 
   REG_XMM0, (REG)0  , (REG)0  , (REG)0  , (REG)0,
@@ -64,60 +83,53 @@ string hexify(UINT64 v) {
 }
 
 // TODO: Add size of target for multiple
-string getValue(CONTEXT* ctxt, REG reg, UINT32 size) {
+string getValue(CONTEXT* ctxt, RegChunk rc) {
   PIN_REGISTER val;
-  PIN_GetContextRegval(ctxt, reg, (UINT8*)&val);
+  PIN_GetContextRegval(ctxt, rc.reg, (UINT8*)&val);
 
   std::stringstream stream;
   stream << "0x" << std::hex;
-  for(UINT32 i = 0; i < size; i++) {
-    stream  << std::setw(2) << std::setfill('0') << val.word[size - i - 1];
-  }
-
+  stream << std::setw(2) << std::setfill('0') << int(val.byte[rc.chunk]);
   return std::string(stream.str());
 }
 
-string getValue(CONTEXT* ctxt, UINT64 addr, UINT32 size) {
-  char buffer[size];
-  PIN_SafeCopy(buffer, (ADDRINT*)addr, size);
+string getValue(CONTEXT* ctxt, UINT64 addr) {
+  char buffer[1];
+  PIN_SafeCopy(buffer, (ADDRINT*)addr, 1);
   std::stringstream stream;
   stream << "0x" << std::hex;
-  for(UINT32 i = 0; i < size; i++) {
-    stream << std::setw(2) << std::setfill('0') << int(buffer[size - i - 1]);
-  }
+  stream << std::setw(2) << std::setfill('0') << int(buffer[0]);
   return std::string(stream.str());
-}
-
-int registerIndex(REG reg) {
-  for(int i = 0; i < (int)(sizeof(regs) / sizeof(REG)); i++) {
-    if(regs[i] == reg)
-      return i;
-  }
-  return -1;
-}
-
-REG baseRegister(int index) {
-  return regs[index / 5 * 5];
 }
 
 REG baseRegister(REG reg) {
-  return regs[registerIndex(reg) / 5 * 5];
+  for(int i = 0; i < (int)(sizeof(regs) / sizeof(REG)); i++) {
+    if(regs[i] == reg)
+      return regs[i / 5 * 5];
+  }
+  std::cout << "Unknown Register: " << reg << " - " << RegisterName(reg) << std::endl;
+  return regs[0];
 }
 
-int endIndex(int index) {
-  return 5 * (index/5 + 1);
+UINT32 registerSize(REG reg) {
+  return REG_Size(reg);
 }
 
-string getRegID(REG br) {
-  return RegisterName(br) + "_" + std::to_string(registerID[br]);
+string getRegID(REG reg) {
+  RegChunk rc = {baseRegister(reg), 0};
+  return RegisterName(rc.reg) + "_" + std::to_string(rc.chunk) + "_" + std::to_string(registerID[rc]);
+}
+
+string getRegID(RegChunk rc) {
+  return RegisterName(rc.reg) + "_" + std::to_string(rc.chunk) + "_" + std::to_string(registerID[rc]);
+}
+
+string getNextRegID(RegChunk rc) {
+  return RegisterName(rc.reg) + "_" + std::to_string(rc.chunk) + "_" + std::to_string(registerID[rc]+1);
 }
 
 string getMemID(UINT64 memAddr) {
   return "MEM_" + hexifyAddr(memAddr) + "_" + std::to_string(addressID[memAddr]);
-}
-
-string getNextRegID(REG br) {
-  return RegisterName(br) + "_" + std::to_string(registerID[br]+1);
 }
 
 string getNextMemID(UINT64 memAddr) {
@@ -125,9 +137,17 @@ string getNextMemID(UINT64 memAddr) {
 }
 
 bool isRegisterTainted(REG reg) {
-  REG breg = baseRegister(registerIndex(reg));
-  for(list<REG>::iterator i = taintedRegister.begin(); i != taintedRegister.end(); i++) {
-    if(breg == *i)
+  REG breg = baseRegister(reg);
+  for(list<RegChunk>::iterator i = taintedRegister.begin(); i != taintedRegister.end(); i++) {
+    if(breg == (*i).reg)
+      return true;
+  }
+  return false;
+}
+
+bool isRegisterTainted(RegChunk reg) {
+  for(list<RegChunk>::iterator i = taintedRegister.begin(); i != taintedRegister.end(); i++) {
+    if(reg.reg == (*i).reg && reg.chunk == (*i).chunk)
       return true;
   }
   return false;
@@ -141,20 +161,14 @@ bool isMemoryTainted(UINT64 addr) {
   return false;
 }
 
-void addRegisterTaint(REG reg) {
-  int index = registerIndex(reg);
-  if(index == -1)
-    return;
-  if(isRegisterTainted(reg))
-    return;
-  taintedRegister.push_back(baseRegister(index));
+void addRegisterTaint(RegChunk rc) {
+  if(!isRegisterTainted(rc))
+    taintedRegister.push_back(rc);
 }
 
-void removeRegisterTaint(REG reg) {
-  int index = registerIndex(reg);
-  if(index == -1)
-    return;
-  taintedRegister.remove(baseRegister(index));
+void removeRegisterTaint(RegChunk rc) {
+  if(isRegisterTainted(rc))
+    taintedRegister.remove(rc);
 }
 
 void addMemoryTaint(UINT64 addr) {
@@ -173,7 +187,7 @@ void addExternalTaint(UINT64 addr, UINT64 extOffset) {
   }
   addressID[addr] = addressID[addr] + 1;
   string offs = std::to_string(extOffset);
-  taintEquations[getMemID(addr)] = "External Taint Offset " + offs + " " + "(EXT_" + offs + "->" + getMemID(addr) + ") - EXT_" + offs + " -> " + getMemID(addr);
+  taintEquations.push_back(getMemID(addr) + ": " + "External Taint ::: EXT_" + offs + " -> " + getMemID(addr));
 }
 
 
@@ -186,14 +200,14 @@ std::string printTaint() {
   //}
   
   state << "\nTainted Registers:\n\t";
-  for(list<REG>::iterator i = taintedRegister.begin(); i != taintedRegister.end(); i++) {
-    state << RegisterName(*i) << " [" << registerID[*i] << "], ";
+  for(list<RegChunk>::iterator i = taintedRegister.begin(); i != taintedRegister.end(); i++) {
+    state << RegisterName((*i).reg) << "_" << std::to_string((*i).chunk) << " [" << registerID[*i] << "], ";
   }
 
   state << "\nEquations:\n";
   typedef std::map<std::string, std::string>::iterator m_type;
-  for(m_type iterator = taintEquations.begin(); iterator != taintEquations.end(); iterator++) {
-    state << "\t" << iterator->first << ": " << iterator->second << std::endl;
+  for(list<string>::iterator it = taintEquations.begin(); it != taintEquations.end(); it++) {
+    state << "\t" << *it << std::endl;
   }
   return state.str();
 }
@@ -202,106 +216,262 @@ std::string getConstraints() {
   std::stringstream constraints;
   
   typedef std::map<std::string, std::string>::iterator m_type;
-  for(m_type iterator = taintEquations.begin(); iterator != taintEquations.end(); iterator++) {
-    constraints << "  " << iterator->first << ": " << iterator->second << std::endl;
+  for(list<string>::iterator it = taintEquations.begin(); it != taintEquations.end(); it++) {
+    constraints << "  " << *it << std::endl;
   }
   return constraints.str();
 }
 
 void taintMemToReg(CONTEXT* ctxt, UINT64 instructionAddr, std::string instruction, UINT64 memAddr, REG reg, UINT32 memSize) {
-  if(!isMemoryTainted(memAddr)) {
-    removeRegisterTaint(reg);
-    return;
+  REG dstBase = baseRegister(reg);
+  UINT32 dstSize = registerSize(reg);
+  UINT32 regSize = registerSize(dstBase);
+  bool tainted = false;
+  for(UINT32 off = 0; off < regSize; off++) {
+    RegChunk dstC = {dstBase, off};
+    UINT64 mA = memAddr + off;
+
+    if(!registerID.count(dstC)) {
+      registerID[dstC] = 0;
+    }
+
+    string dstID = getRegID(dstC);
+    string dstNI = getNextRegID(dstC);
+    string eqtn;
+
+    if(off < memSize && off < dstSize) {
+      if(isMemoryTainted(mA)) {
+	tainted = true;
+	eqtn = instruction + " ::: " + getMemID(mA) + " -> " + dstNI;
+      } else {
+	eqtn = instruction + " ::: " + getValue(ctxt, mA) + " -> " + dstNI;	
+      }
+    } else {
+      if(isRegisterTainted(dstC)) {
+	eqtn = instruction + " ::: " + dstID + " @> " + dstNI;	
+      } else {
+	eqtn = instruction + " ::: " + getValue(ctxt, dstC) + " @> " + dstNI;	
+      }
+    }
+    if(tainted) {
+      taintEquations.push_back(dstNI + ": " + eqtn);
+      addRegisterTaint(dstC);
+    } else {
+      removeRegisterTaint(dstC);
+    }
   }
-  REG br = baseRegister(reg);
-  if(!registerID.count(br)) {
-    registerID[br] = 0;
+
+  if(tainted) {
+    for(UINT32 off = 0; off < regSize; off++) {
+      RegChunk dstC = {dstBase, off};
+      registerID[dstC] = registerID[dstC] + 1;
+    }
   }
-  taintEquations[getNextRegID(br)] = instruction + " " + "(" + getValue(ctxt, memAddr, memSize) + "->" + getNextRegID(br) + ") - " + getMemID(memAddr) + " -> " + getNextRegID(br) + " (" + std::to_string(memSize) + ")";
-  registerID[br] = registerID[br] + 1;
-  if(isRegisterTainted(reg))
-    return;
-  addRegisterTaint(reg);
 }
 
 void taintRegToMem(CONTEXT* ctxt, UINT64 instructionAddr, std::string instruction, REG reg, UINT64 memAddr, UINT32 memSize) {
-  if(!isRegisterTainted(reg)) {
-    removeMemoryTaint(memAddr);
-    return;
-  }
-  if(!addressID.count(memAddr)) {
-    addressID[memAddr] = 0;
-  }
-  REG br = baseRegister(reg);
+  REG srcBase = baseRegister(reg);
+  UINT32 dstSize = memSize;
+  bool tainted = false;
+  for(UINT32 off = 0; off < dstSize; off++) {
+    RegChunk srcC = {srcBase, off};
+    UINT64 mA = memAddr + off;
 
-  taintEquations[getNextMemID(memAddr)] = instruction + " " + "(" + getValue(ctxt, br, REG_Size(reg)) + "->" + getNextMemID(memAddr) + ") - " + getRegID(br) + " -> " + getNextMemID(memAddr) + " (" + std::to_string(memSize) + ")";
-  addressID[memAddr] = addressID[memAddr] + 1;
+    if(!addressID.count(mA)) {
+      addressID[mA] = 0;
+    }
 
-  if(isMemoryTainted(memAddr))
-    return;
-  addMemoryTaint(memAddr);
+    string dstID = getMemID(mA);
+    string dstNI = getNextMemID(mA);
+    string eqtn;
+
+    if(isRegisterTainted(srcC)) {
+      tainted = true;
+      eqtn = instruction + " ::: " + getRegID(srcC) + " -> " + dstNI;
+    }
+
+    if(tainted) {
+      taintEquations.push_back(dstNI + ": " + eqtn);
+      addMemoryTaint(mA);
+    } else {
+      removeMemoryTaint(mA);
+    }
+  }
+  if(tainted) {
+    for(UINT32 off = 0; off < dstSize; off++) {
+      addressID[memAddr + off] += 1;
+    }
+  }
 }
 
 void taintRegToReg(CONTEXT* ctxt, UINT64 instructionAddr, std::string instruction, REG regSrc, REG regDst) {
-  if(!isRegisterTainted(regSrc)) {
-    removeRegisterTaint(regDst);
-    return;
+  REG srcBase = baseRegister(regSrc);
+  UINT32 srcSize = registerSize(regSrc);
+  REG dstBase = baseRegister(regDst);
+  UINT32 dstSize = registerSize(regDst);
+  UINT32 regSize = registerSize(dstBase);
+  bool tainted = false;
+  for(UINT32 off = 0; off < regSize; off++) {
+    RegChunk srcC = {srcBase, off};
+    RegChunk dstC = {dstBase, off};
+
+    if(!registerID.count(dstC)) {
+      registerID[dstC] = 0;
+    }
+
+    string dstID = getRegID(dstC);
+    string dstNI = getNextRegID(dstC);
+    string eqtn;
+
+    if(off < dstSize) {
+      if(isRegisterTainted(srcC)) {
+	tainted = true;
+	eqtn = instruction + " ::: " + getRegID(srcC) + " -> " + dstNI;
+      } else {
+	eqtn = instruction + " ::: " + getValue(ctxt, srcC) + " -> " + dstNI;
+      }
+    } else {
+      if(isRegisterTainted(dstC)) {
+	eqtn = instruction + " ::: " + dstID + " @> " + dstNI;	
+      } else {
+	eqtn = instruction + " ::: " + getValue(ctxt, dstC) + " @> " + dstNI;	
+      }
+    }
+
+    if(tainted) {
+      taintEquations.push_back(dstNI + ": " + eqtn);
+      addRegisterTaint(dstC);
+    } else {
+      removeRegisterTaint(dstC);
+    }
   }
-  REG brSrc = baseRegister(regSrc);
-  REG brDst = baseRegister(regDst);
-  if(!registerID.count(brDst)) {
-    registerID[brDst] = 0;
+
+  if(tainted) {
+    for(UINT32 off = 0; off < regSize; off++) {
+      RegChunk dstC = {dstBase, off};
+      registerID[dstC] = registerID[dstC] + 1;
+    }
   }
-  taintEquations[getNextRegID(brDst)] = instruction + " " + "(" + getValue(ctxt, brSrc, REG_Size(regSrc)) + "->" + getNextRegID(brDst) + ") - " + getRegID(brSrc) + " -> " + getNextRegID(brDst);
-  registerID[brDst] = registerID[brDst] + 1;
-  if(isRegisterTainted(regDst))
-    return;
-  addRegisterTaint(regDst);
 }
 
 void taintRegConstantToReg(CONTEXT* ctxt, UINT64 instructionAddr, std::string instruction, REG regSrc, ADDRINT cnst, REG regDst) {
-  if(!isRegisterTainted(regSrc)) {
-    removeRegisterTaint(regDst);
-    return;
+  REG srcBase = baseRegister(regSrc);
+  UINT32 srcSize = registerSize(regSrc);
+  REG dstBase = baseRegister(regDst);
+  UINT32 dstSize = registerSize(regDst);
+  UINT32 regSize = registerSize(dstBase);
+  bool tainted = false;
+  for(UINT32 off = 0; off < regSize; off++) {
+    RegChunk srcC = {srcBase, off};
+    RegChunk dstC = {dstBase, off};
+    string ch = hexify(cnst % 256);
+    cnst /= 256;
+
+    if(!registerID.count(dstC)) {
+      registerID[dstC] = 0;
+    }
+
+    string dstID = getRegID(dstC);
+    string dstNI = getNextRegID(dstC);
+    string eqtn;
+
+    if(off < dstSize) {
+      if(isRegisterTainted(srcC)) {
+	tainted = true;
+	eqtn = instruction + " ::: " + getRegID(srcC) + " + " + ch + " -> " + dstNI;
+      } else {
+	eqtn = instruction + " ::: " + getValue(ctxt, srcC) + " + " + ch + " -> " + dstNI;
+      }
+    } else {
+      if(isRegisterTainted(dstC)) {
+	eqtn = instruction + " ::: " + dstID + " @> " + dstNI;	
+      } else {
+	eqtn = instruction + " ::: " + getValue(ctxt, dstC) + " @> " + dstNI;	
+      }
+    }
+
+    if(tainted) {
+      taintEquations.push_back(dstNI + ": " + eqtn);
+      addRegisterTaint(dstC);
+    } else {
+      removeRegisterTaint(dstC);
+    }
   }
-  REG brSrc = baseRegister(regSrc);
-  REG brDst = baseRegister(regDst);
-  if(!registerID.count(brDst)) {
-    registerID[brDst] = 0;
+
+  if(tainted) {
+    for(UINT32 off = 0; off < regSize; off++) {
+      RegChunk dstC = {dstBase, off};
+      registerID[dstC] = registerID[dstC] + 1;
+    }
   }
-  string ch = hexify(cnst);
-  taintEquations[getNextRegID(brDst)] = instruction + " " + "(" + getValue(ctxt, brSrc, REG_Size(regSrc)) + "+" +  ch + "->" + getNextRegID(brDst) + ") - " + getRegID(brSrc) + " + " + ch + " -> " + getNextRegID(brDst);
-  registerID[brDst] = registerID[brDst] + 1;
-  if(isRegisterTainted(regDst))
-    return;
-  addRegisterTaint(regDst);
 }
 
 void taintConstantToReg(CONTEXT* ctxt, UINT64 instructionAddr, std::string instruction, REG regDst) {
-  removeRegisterTaint(regDst);
-  return;
+  REG dstBase = baseRegister(regDst);
+  UINT32 dstSize = registerSize(regDst);
+  UINT32 regSize = registerSize(dstBase);
+  bool tainted = false;
+  for(UINT32 off = 0; off < regSize; off++) {
+    RegChunk dstC = {dstBase, off};
+    removeRegisterTaint(dstC);
+  }
 }
 
 void taintReg2ToReg(CONTEXT* ctxt, UINT64 instructionAddr, std::string instruction, REG regSrc1, REG regSrc2, REG regDst) {
-  if(!isRegisterTainted(regSrc1) && !isRegisterTainted(regSrc2)) {
-    removeRegisterTaint(regDst);
-    return;
+  REG sc1Base = baseRegister(regSrc1);
+  UINT32 sc1Size = registerSize(regSrc1);
+  REG sc2Base = baseRegister(regSrc2);
+  UINT32 sc2Size = registerSize(regSrc2);
+  REG dstBase = baseRegister(regDst);
+  UINT32 dstSize = registerSize(regDst);
+  UINT32 regSize = registerSize(dstBase);
+  bool tainted = false;
+  for(UINT32 off = 0; off < regSize; off++) {
+    RegChunk sc1C = {sc1Base, off};
+    RegChunk sc2C = {sc2Base, off};
+    RegChunk dstC = {dstBase, off};
+
+    if(!registerID.count(dstC)) {
+      registerID[dstC] = 0;
+    }
+
+    string dstID = getRegID(dstC);
+    string dstNI = getNextRegID(dstC);
+    string eqtn;
+
+    if(off < dstSize) {
+      if(isRegisterTainted(sc1C) || isRegisterTainted(sc2C)) {
+	tainted = true;
+	if(!isRegisterTainted(sc1C)) {
+	  eqtn = instruction + " ::: " + getValue(ctxt, sc1C) + " + " + getRegID(sc2C) + " -> " + dstNI;
+	} else if(!isRegisterTainted(sc2C)) {
+	  eqtn = instruction + " ::: " + getRegID(sc1C) + " + " + getValue(ctxt, sc2C) + " -> " + dstNI;
+	} else {
+	  eqtn = instruction + " ::: " + getRegID(sc1C) + " + " + getRegID(sc2C) + " -> " + dstNI;
+	}
+      } else {
+	eqtn = instruction + " ::: " + getValue(ctxt, sc1C) + " + " + getValue(ctxt, sc2C) + " -> " + dstNI;
+      }
+    } else {
+      if(isRegisterTainted(dstC)) {
+	eqtn = instruction + " ::: " + dstID + " @> " + dstNI;	
+      } else {
+	eqtn = instruction + " ::: " + getValue(ctxt, dstC) + " @> " + dstNI;	
+      }
+    }
+
+    if(tainted) {
+      taintEquations.push_back(dstNI + ": " + eqtn);
+      addRegisterTaint(dstC);
+    } else {
+      removeRegisterTaint(dstC);
+    }
   }
-  REG brSrc1 = baseRegister(regSrc1);
-  REG brSrc2 = baseRegister(regSrc2);
-  REG brDst = baseRegister(regDst);
-  if(!registerID.count(brDst)) {
-    registerID[brDst] = 0;
+
+  if(tainted) {
+    for(UINT32 off = 0; off < regSize; off++) {
+      RegChunk dstC = {dstBase, off};
+      registerID[dstC] = registerID[dstC] + 1;
+    }
   }
-  if(isRegisterTainted(regSrc1) && isRegisterTainted(regSrc2)) {
-    taintEquations[getNextRegID(brDst)] = instruction + " " + "(" + getValue(ctxt, brSrc1, REG_Size(regSrc1)) + "+" + getValue(ctxt, brSrc2, REG_Size(regSrc2)) + "->" + getNextRegID(brDst) + ") - " + getRegID(brSrc1) + + " + " + getRegID(brSrc2) + " -> " + getNextRegID(brDst);
-  } else if(isRegisterTainted(regSrc1)) {
-    taintEquations[getNextRegID(brDst)] = instruction + " " + "(" + getValue(ctxt, brSrc1, REG_Size(regSrc1)) + "+" + getValue(ctxt, brSrc2, REG_Size(regSrc2)) + "->" + getNextRegID(brDst) + ") - " + getRegID(brSrc1) + + " + " + getValue(ctxt, brSrc2, REG_Size(regSrc2)) + " -> " + getNextRegID(brDst);
-  } else {
-    taintEquations[getNextRegID(brDst)] = instruction + " " + "(" + getValue(ctxt, brSrc1, REG_Size(regSrc1)) + "+" + getValue(ctxt, brSrc2, REG_Size(regSrc2)) + "->" + getNextRegID(brDst) + ") - " + getValue(ctxt, brSrc1, REG_Size(regSrc1)) + + " + " + getRegID(brSrc2) + " -> " + getNextRegID(brDst);
-  }
-  registerID[brDst] = registerID[brDst] + 1;
-  if(isRegisterTainted(regDst))
-    return;
-  addRegisterTaint(regDst);
 }

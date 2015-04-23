@@ -53,21 +53,24 @@ class FuzzedProgram:
         vrs = {}
 
         for l in data:
-            if l.startswith('br_'):
-                bid = l.split(":")[0]
-                instr = l.split(":")[1][1:].split("(")[0].strip()
-                state = l.split(":")[1][1:].split("(")[1].split(")")[0].strip()
-                var = l.split(":")[1][1:].split(" - ")[1]
-                formula = parser.asmInstruction(instr, var)
-                taken = parser.asmBranch(instr, state)
-                branches.append((bid, formula, taken))
-            elif l.startswith('  '):
-                var = l.split(":")[0].strip()
-                if not var in vrs:
-                    vrs[var] = z3.BitVec(var, 32)
-                instr = l.split(":")[1][1:].split("(")[0].strip()
-                eqtn = l.split(" - ")[-1].strip()
-                constraints.append((var, parser.asmInstruction(instr, eqtn)))
+            if not l.startswith('br_') and not l.startswith('  '):
+                continue
+            idnt, eqtn = l.split(':', 1)
+            idnt = idnt.strip()
+            if idnt.startswith('br_'):
+                asm = eqtn.split(' (', 1)[0].strip()
+                state = eqtn.split('(', 1)[1].split(')', 1)[0].strip()
+                var = eqtn.rsplit(' - ', 1)[1].strip()
+                formula = parser.asmInstruction(asm, var)
+                taken = parser.asmBranch(asm, state)
+                branches.append((idnt, formula, taken))
+            else:
+                asm, eqtn = eqtn.split(' ::: ', 1)
+                if not idnt in vrs:
+                    vrs[idnt] = z3.BitVec(idnt, 32)
+                ai = parser.asmInstruction(asm.strip(), eqtn.strip())
+                if ai:
+                    constraints.append((idnt, ai))
         return (branches, constraints, vrs)
 
     def process(self):
@@ -130,17 +133,6 @@ class FuzzedProgram:
             self.completed[pathID] = data
             
 
-
-
-        branchStrings = []
-        constraintStrings = []
-        solver = z3.Solver()
-        vrs = {}
-        # for b in branchStrings:
-        #     print b
-        # for c in constraintStrings:
-        #     print c[1]
-
 def userInput(fp):
     while True:
         i = raw_input('Prioritize Branch ((TRUE|FALSE)_ID): ')
@@ -151,7 +143,7 @@ def run(program, taintedInput):
     print "Testing %s with tainted input %s" % (program, taintedInput)
     fp = FuzzedProgram(program, taintedInput, False)
     t = Thread(target=userInput, args=(fp,))
-    t.start()
+    #t.start()
     fp.setInput('')
     fp.process()
     #print fp.paths.keys()

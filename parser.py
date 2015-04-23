@@ -2,7 +2,7 @@
 import z3
 
 def asmBranch(instr, state):
-    opc = instr.split(" ")[0]
+    opc, _ = instr.split(" ")
     rf = state[::-1]
     if opc == 'jnz':
         return rf[6] != '0'
@@ -13,45 +13,49 @@ def asmBranch(instr, state):
     
 
 def asmInstruction(instr, eqtn):
-    opc = instr.split(" ")[0]
-    if instr.startswith('External Taint'):
-        src = eqtn.split(' -> ')[0]
-        dst = eqtn.split(' -> ')[1].split(' ')[0]
-        return '%s = %s' % (dst, '$E%s' % src.replace('EXT_', ''))
-    if opc == 'jnz':
-        return '%s != 0' % eqtn.split(' ')[0]
-    elif opc == 'jz':
-        return '%s == 0' % eqtn.split(' ')[0]
-    elif opc == 'jl':
-        return '%s < 0' % eqtn.split(' ')[0]
-    elif opc.startswith('mov') or opc == 'push' or opc == 'pop':
-        src = eqtn.split(' -> ')[0]
-        dst = eqtn.split(' -> ')[1].split(' ')[0]
+    opc,rest = instr.split(" ", 1)
+    src = eqtn
+    dst = None
+    src1 = None
+    src2 = None
+
+    if 'RFLAGS_' in eqtn and 'RFLAGS_0' not in eqtn:
+        return None
+
+    if ' @> ' in eqtn:
+        dst,src = eqtn.split(' @> ')
         return '%s = %s' % (dst, src)
-    elif opc == 'cmp':
-        src1 = eqtn.split(' -> ')[0].split(' + ')[0]
-        src2 = eqtn.split(' -> ')[0].split(' + ')[1]
-        dst = eqtn.split(' -> ')[1].split(' ')[0]
+
+    if ' -> ' in eqtn:
+        src, dst = eqtn.split(' -> ')
+
+    if ' + ' in src:
+        src1, src2 = src.split(' + ')
+
+    if instr.startswith('External Taint'):
+        return '%s = %s' % (dst, '$E%s' % src.replace('EXT_', ''))
+    elif opc == 'jnz':
+        return '%s != 0' % src
+    elif opc == 'jz':
+        return '%s == 0' % src
+    elif opc == 'jl':
+        return '%s < 0' % src
+    elif opc == 'bsf':
+        return '%s <- %s' % (dst, src)
+    elif opc.startswith('mov') or opc == 'push' or opc == 'pop' or opc == 'pmovmskb':
+        return '%s = %s' % (dst, src)
+    elif opc == 'pslldq':
+        shift = rest.split(', ')[1]
+        return '%s = %s << %s' % (dst, src1, shift)
+    elif (opc == 'pcmpeqb' or opc == 'cmp') and src1:
         return '%s = %s - %s' % (dst, src2, src1)
-    elif opc == 'test':
-        src1 = eqtn.split(' -> ')[0].split(' + ')[0]
-        src2 = eqtn.split(' -> ')[0].split(' + ')[1]
-        dst = eqtn.split(' -> ')[1].split(' ')[0]
+    elif opc == 'test' and src1:
         return '%s = %s & %s' % (dst, src1, src2)
-    elif opc == 'sub':
-        src1 = eqtn.split(' -> ')[0].split(' + ')[0]
-        src2 = eqtn.split(' -> ')[0].split(' + ')[1]
-        dst = eqtn.split(' -> ')[1].split(' ')[0]
+    elif (opc == 'psubb' or opc == 'sub') and src1:
         return '%s = %s - %s' % (dst, src1, src2)
-    elif opc == 'add':
-        src1 = eqtn.split(' -> ')[0].split(' + ')[0]
-        src2 = eqtn.split(' -> ')[0].split(' + ')[1]
-        dst = eqtn.split(' -> ')[1].split(' ')[0]
+    elif opc == 'add' and src1:
         return '%s = %s + %s' % (dst, src1, src2)
-    elif opc == 'xor':
-        src1 = eqtn.split(' -> ')[0].split(' + ')[0]
-        src2 = eqtn.split(' -> ')[0].split(' + ')[1]
-        dst = eqtn.split(' -> ')[1].split(' ')[0]
+    elif opc == 'xor' and src1:
         return '%s = %s ^ %s' % (dst, src1, src2)
         
     print "Unknown instruction: %s (%s)" % (instr, eqtn)
@@ -59,51 +63,71 @@ def asmInstruction(instr, eqtn):
 
 def asmZ3(solver, vrs, cnst, invert=False):
     def getZ3(v):
+        v = v.strip()
         if v in vrs:
             return vrs[v]
+        elif v.startswith('0x'):
+            return int(v[2:], 16)
         else:
             try:
                 return int(v, 16)
             except:
                 vrs[v] = z3.BitVec(v, 32)
+                return vrs[v]
+    def z3ify(vs):
+        return [getZ3(i) for i in vs]
 
+
+    term = None
+
+    if ' <- ' in cnst:
+        l,r = z3ify(cnst.split(' <- '))
+        term = l == r != 0
     if ' == ' in cnst:
-        left = cnst.split(" == ")[0]
-        right = cnst.split(" == ")[1]
-        if invert:
-            return solver.add(getZ3(left) != getZ3(right))
-        return solver.add(getZ3(left) == getZ3(right))
+        l,r = z3ify(cnst.split(' == '))
+        term = l == r
     elif ' != ' in cnst:
-        left = cnst.split(" != ")[0]
-        right = cnst.split(" != ")[1]
-        if invert:
-            return solver.add(getZ3(left) == getZ3(right))
-        return solver.add(getZ3(left) != getZ3(right))
+        l,r = z3ify(cnst.split(' != '))
+        term = l != r
     elif ' < ' in cnst:
-        left = cnst.split(" < ")[0]
-        right = cnst.split(" < ")[1]
+        l,r = z3ify(cnst.split(' < '))
+        term = l < r
+    elif ' <= ' in cnst:
+        l,r = z3ify(cnst.split(' <= '))
+        term = l <= r
+    elif ' >= ' in cnst:
+        l,r = z3ify(cnst.split(' >= '))
+        term = l >= r
+    elif ' > ' in cnst:
+        l,r = z3ify(cnst.split(' > '))
+        term = l > r
+    elif ' = ' in cnst:
+        l,r = cnst.split(' = ')
+        l = getZ3(l)
+        if ' - ' in r:
+            r1,r2 = z3ify(r.split(' - '))
+            term = l == r1 - r2
+        elif ' + ' in r:
+            r1,r2 = z3ify(r.split(' + '))
+            term = l == r1 + r2
+        elif ' & ' in r:
+            r1,r2 = z3ify(r.split(' & '))
+            term = l == r1 & r2
+        elif ' | ' in r:
+            r1,r2 = z3ify(r.split(' | '))
+            term = l == r1 | r2
+        elif ' ^ ' in r:
+            r1,r2 = z3ify(r.split(' ^ '))
+            term = l == r1 ^ r2
+        elif ' << ' in r:
+            r1,r2 = z3ify(r.split(' << '))
+            term = l == r1 << r2
+        elif not ' ' in r.strip():
+            term = l == getZ3(r)
+
+    if term:
         if invert:
-            return solver.add(getZ3(left) >= getZ3(right))
-        return solver.add(getZ3(left) < getZ3(right))
+            return solver.add(z3.Not(term))
+        return solver.add(term)
 
-
-    left = cnst.split(" = ")[0]
-    right = cnst.split(" = ")[1]
-    if ' - ' in right:
-        r1 = right.split(' - ')[0]
-        r2 = right.split(' - ')[1]
-        solver.add(getZ3(left) == getZ3(r1) - getZ3(r2))
-    elif ' + ' in right:
-        r1 = right.split(' + ')[0]
-        r2 = right.split(' + ')[1]
-        solver.add(getZ3(left) == getZ3(r1) + getZ3(r2))
-    elif ' & ' in right:
-        r1 = right.split(' & ')[0]
-        r2 = right.split(' & ')[1]
-        solver.add(getZ3(left) == getZ3(r1) & getZ3(r2))
-    elif ' ^ ' in right:
-        r1 = right.split(' ^ ')[0]
-        r2 = right.split(' ^ ')[1]
-        solver.add(getZ3(left) == getZ3(r1) ^ getZ3(r2))
-    else:
-        solver.add(getZ3(left) == getZ3(right))
+    print "Unknown Constraint: %s" % cnst

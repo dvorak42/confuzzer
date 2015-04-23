@@ -6,6 +6,8 @@ Separate registers into 8-bit chunks. For each instruction, update all the parts
 
 On the python side, create an additional constraint for each of the operations that link REG_RAX1 with 
 
+Handle '@>' correctly.
+
 mov 0 -> REG_RAX2
  REG_RAX1_2 = @REG_RAX1
   REG_RAX1_2 = REG_RAX1_1
