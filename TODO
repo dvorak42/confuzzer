@@ -31,3 +31,4 @@ REG_RBX2 + REG_RAX2 -> REG_RAX2
   REG_RAX1_4 = REG_RAX1_3 + (tREG_RAX2_4 / 256)
 
 
+* Look into running test4 under S2E
