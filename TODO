@@ -1,4 +1,29 @@
 * Deal with CMOV
-* Deal with XMM registers
 
 * Create shell-ish test case.
+* Deal with XMM registers
+Separate registers into 8-bit chunks. For each instruction, update all the parts of the register with either the new operation or REG_RAX1_8 = REG_RAX1_7, ...
+
+On the python side, create an additional constraint for each of the operations that link REG_RAX1 with 
+
+mov 0 -> REG_RAX2
+ REG_RAX1_2 = @REG_RAX1
+  REG_RAX1_2 = REG_RAX1_1
+ REG_RAX2_2 = 0
+  REG_RAX2_2 = 0
+
+REG_RBX1 + REG_RAX1 -> REG_RAX1
+ REG_RAX1_3 = REG_RAX1_2 + REG_RBX1_1
+  tREG_RAX1_3 = REG_RAX1_2 + REG_RBX1_1
+  REG_RAX1_3 =  tREG_RAX1_3 % 256
+ REG_RAX2_3 = @REG_RAX2
+  REG_RAX2_3 = REG_RAX2_2 + (tREG_RAX1_3 / 256)
+
+REG_RBX2 + REG_RAX2 -> REG_RAX2
+ REG_RAX2_4 = REG_RAX2_3 + REG_RBX2_1
+  tREG_RAX2_4 = REG_RAX2_3 + REG_RBX2_1
+  REG_RAX2_4 = tREG_RAX2_4 % 256
+ REG_RAX1_4 = @REG_RAX1
+  REG_RAX1_4 = REG_RAX1_3 + (tREG_RAX2_4 / 256)
+
+
