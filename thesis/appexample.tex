@@ -1,1 +1,158 @@
 \chapter{Example Program}
+In order to demonstrate the success of the \textit{Confuzzer} system, we've
+included the code for a simple test application as well as excerpts from its
+execution under the Confuzzer system. Using a single execution node, this test
+took about 14 hours and generated a total of around 40500 unique inputs, without
+pruning, to the program. 
+
+\lstinputlisting[language=C++]{test4.c}
+
+This program works by taking in 8 instructions as part of a text file, each of
+which could either ``[l]ist'' the files that have been created, ``[w]rite'' a
+new file, or ``[d]ump'' the contents of the files. Due to an implementation bug,
+this code has a memory corruption error if too many files are written. Since
+this was compiled on a 64-bit system, this tends to occur when more than 4 files
+are written to memory. Below is a part of the output from the fuzzer, showing
+the test cases that were sent to the Taint Analyzer, as well as the newly
+generated test cases from each execution:
+
+\begin{multicols}{2}
+\begin{verbatim}
+Testing ./test4 with:
+ Tainted input 'script.txt'
+Left: 1
+1 l
+1 w
+1 d
+1 t
+1 $l
+1 $w
+1 $d
+1 $�
+1 $_l
+1 $_w
+1 _�
+1 $_d
+Left: 12
+2 
+Left: 12
+3 wl
+3 ww
+3 wd
+3 wt
+3 w$l
+3 w$w
+3 w$d
+3 w$�
+3 w$_l
+3 w$_w
+3 w$_d
+3 w$_t
+3 w$__l
+3 w$__w
+3 w$__d
+3 w$_c�
+3 w$�__l
+3 w$�__w
+3 w$�__d
+3 w$P�C�
+3 w$O_?_l
+3 w$O_?_w
+3 w$O_?_d
+3 w$__c`�
+3 w$_____l
+3 w$_____w
+3 w$_____d
+3 w$___�?_
+Left: 39
+4 �
+Left: 39
+5 $_t
+5 $__l
+5 $__w
+5 $__d
+5 $_c�
+5 $�__l
+5 $�__w
+5 $�__d
+5 $P�C�
+5 $O_?_l
+5 $O_?_w
+5 $O_?_d
+5 $__c`�
+5 $_____l
+5 $_____w
+5 $_____d
+5 $_X_c_�
+5 $___�?_l
+5 $___�?_w
+5 $___�?_d
+5 $`______
+Left: 59
+...
+Left: 5
+Left: 4
+Left: 3
+Left: 2
+Left: 1
+40481 wwwwwwl
+40481 wwwwwww
+40481 wwwwwwd
+40481 wwwwwwt
+40481 wwwwww$l
+40481 wwwwww$w
+40481 wwwwww$d
+40481 wwwwww$_
+Left: 8
+40482 wwwwwwll
+40482 wwwwwwlw
+40482 wwwwwwld
+40482 wwwwwwl$
+Left: 11
+Left: 10
+Left: 9
+Left: 8
+40486 wwwwww$l
+40486 wwwwww`
+Left: 9
+Left: 8
+40488 wwwwwwd
+Left: 8
+Left: 7
+Left: 6
+Left: 5
+40492 wwwwwwl^D
+Left: 5
+Left: 4
+40494 wwwwwwl$
+Left: 4
+Left: 3
+Left: 2
+Left: 1
+\end{verbatim}
+\end{multicols}
+
+A subset of the crashing inputs that were discovered is below:
+
+\begin{verbatim}
+Crashing Inputs:
+        $_wwwwdw
+        $_wwwwlw
+        $wdwwwdw
+        $wdwwwwl
+        $wldwwww
+        $wlw_www
+        $wlwdwww
+        $wlww_ww
+        $wlwwww
+...
+\end{verbatim}
+
+This along with the remaining crashing inputs covers most of the space of inputs
+that should crash the program, showing that even with a program that has a
+combinatorial explosion of paths $4^8$, Confuzzer is still able to function in a
+reasonable amount of time. The 14 hours for $~40000$ paths matches closely with
+the results observed by the SAGE system \cite{sage}. With the use of N nodes,
+the time needed to run this test could be reduced by about a factor of $N$,
+since the majority of the time was spent in the actual execution of the programs
+with different inputs.

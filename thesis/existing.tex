@@ -1,1 +1,150 @@
 \chapter{Existing Work}
+Most of the existing work in the area of fuzzers tend to focus on using code
+coverage and similar metrics in order to direct the test inputs that are being
+generated. We'll take a look at other metrics that are used by Fuzzers first,
+before looking at systems that use Concolic Execution to do Path exploration to
+assist in fuzzing and other similar systems.
+
+We'll also review these existing systems to see the differences between these
+systems and our design and implementation of the Confuzzer system. As well as
+their respective advantages and disadvantages.
+
+\section{Existing Fuzzers}
+Most of the notable fuzzers that are in use nowadays that don't use symbolic
+execution systems tend to use some form of evolutionary/genetic mutation to
+generate new test cases. EFS is an example of such a system, first published in
+2007 \cite{evolfuzzing}. Since then, a number of other systems have been
+designed, including AutoFuzz a fuzzer aimed at trying to determine network
+protocol information from an initial example of the interaction between Client
+and Server and then through additional fuzzing to generate mutations of these
+initial samples \cite{autofuzz}.
+
+Most of these systems share a similar design in which an initial ``seed file''
+is created with examples of an input to the program, and the system then runs by
+mutating the inputs to generate new related inputs that might hit other parts of
+the program execution. Fuzzers tend to have this design since otherwise a lot of
+the test inputs would fail to gain any useful information as they get blocked by
+the initial checks that a program might make looking for specific magic numbers
+or file structures.
+
+While this does limit fuzzers to be more adept at fuzzing certain classes of
+program or requiring external seed files, the advancements in
+evolutionary/mutation based fuzzers have allowed for a wide variety of commonly
+used libraries and programs to be thoroughly fuzzed. We'll take a look at one of
+the better non-commercial fuzzers to see what sorts of design decisions were
+made and how it compares to a fuzzer based on symbolic execution principles.
+
+\subsection{american fuzzy lop}
+One of the most well-known fuzzer is ``american fuzzy lop'', a fairly effective
+fuzzer developed using compile-time instrumentation and genetic algorithms to
+generate additional test cases to check against the application \cite{afl}. Due
+to some of the optimizatoins made over other fuzzers, and its use of
+optimizations at the instrumentation level, it is one of the fastest binary-only
+fuzzers available \cite{afldesign}. It has found bugs in over $75$ different
+pieces of software and has multiple CVEs dedicated to bugs found by AFL.
+
+In fact, while the software was explicitly designed to not use static analysis
+or symbolic execution for performance reasons, it was still able to generate
+input that included unseeded magic values by using the basic path exploration
+techniques that are included as part of afl-fuzz \cite{aflsymbol}. The one
+downside to afl-fuzz is that many of its features and optimizations do require
+compile-time instrumentation to function and are thus less effective with
+closed-source binaries.
+
+However afl-fuzz still accomplishes a great deal while staying true to its
+original design goals of being fast, useable and reliable for the general use
+\cite{aflhistory}. As afl-fuzz is improved, so to are the optimizations and
+performance hacks that can be used by other Fuzzing systems aimed at fuzzing
+primarily closed-source binaries.
+
+\section{Symbolic/Concolic Execution Systems}
+\begin{table}
+\begin{tabular}{| c | c | c | c | p{6cm} |}
+\hline
+System & Fuzzer & Source Code & Execution & Description\\
+& & Required & Layer &\\\hline
+Confuzzer & Yes & No & Binary & Fuzzing system using binary-level concolic execution.\\
+KLEE & Yes & Yes & System & LLVM Extension to provide fuzzing through concolic
+execution.\\
+SAGE & Yes & No & Binary & Windows tool for fuzzing programs using concolic
+execution.\\
+s2e & No & No & System & Path Exploration tool to analyze binaries.\\
+\hline
+\end{tabular}
+\caption{Comparison of Symbolic Execution Systems}
+\label{table:othersys}
+\end{table}
+
+There are also a number of Symbolic Execution systems that use Symbolic
+Execution to perform path exploration for the purpose of fuzzing or doing other
+sorts of analysis on the program. While almost all the Symbolic Execution
+systems have a significantly slower runtime than other Fuzzers (sometimes up to
+1000x slowdown), they do provide a significant advantage to other fuzzers, as
+they can find fewer test cases that cover more of the possible execution paths
+through the program. Some notable ones are KLEE, SAGE, and s2e. We'll briefly go
+over each of these to see how they compare to Confuzzer. Table
+\ref{table:othersys} also provides an overview of these systems and their
+features.
+
+\subsection{KLEE}
+KLEE is a symbolic execution tool that uses source code and the LLVM compiler to
+generate tests that attain a high coverage throughout program execution
+\cite{klee}. The general design of KLEE is using LLVM to create an Intermediate
+Representation (IR) of the program that can be used to easily build up constraints
+and symbolic formulas throughout the program execution, which can later be
+solved to generate new test cases that explore other branches.
+
+Unlike the other systems we talk about that don't require source code, KLEE is
+able to use the source and generated IR in order to create complete constraints
+for each instruction without any approximations. This allows almost perfect
+taint analysis in exchange for the source code requirement allowing further
+optimizations to be performed and tighter constraints when calculating new test
+cases. However, even with the generated IR, there are still some classes of code
+that can't be easily instrumented by KLEE, including floating point computation
+and inline assembly code. KLEE performs fairly well as a Symbolic Fuzzer and is
+able to handle many programs with available source-code.
+
+\subsection{SAGE}
+Moving on, we look over SAGE, a system designed at Microsoft that performs
+symbolic fuzzing without the need for source code \cite{sage}. Between
+all the existing Fuzzers and Symbolic Execution systems, SAGE ends up being one
+of the closest in design and performance to Confuzzer, though primarily tested
+as a Fuzzer targeting Windows executables and environments. SAGE starts with a
+seed file in order to initially figure out the first path through the binary,
+and during each iteration it generates new inputs by looking for new paths that
+can be explored. In order to actually generate the necessary path information
+and constraints, SAGE uses a combination of iDNA and TruScan which are tools
+that allow offline analysis of the trace of a program, allowing SAGE to separate
+the process of Taint Analysis from the actual execution of the program.
+
+While this design does allow for more efficient Taint Analysis, it does suffer
+some issues when dealing with maliciously written programs which violate the
+assumptions of stack/heap space made by the Trace programs and might result in
+incorrect values being stored in the program trace. In addition, this results in
+SAGE having to effectively run each program execution twice, once to generate
+the original program trace, and a second time to actually build up the
+constraint and concrete value equations.
+
+\subsection{S$^2$E}
+S$^2$E is a system that provides automatic path exploration to allow other
+programs and plugins to perform tests across all paths that a program might
+traverse down. It provides this path exploration using a symbolic execution
+system that analyzes the program and generates new inputs so that the program
+travels down new paths. While it isn't primarily a Fuzzer, it would take little
+effort to add the necessary selectors and analyzers to S$^2$E to create a
+fuzzing system. Unlike most of the other Symbolic Execution systems we've
+discussed, S$^2$E doesn't actually instrument the application being analyzed,
+but rather instruments the entire system to control inputs at all levels of the
+machine. While this does allow for more general control of the environment, it
+does come at the cost of having to instrument an entire machine and therefore is
+theoretically slower than equivalent binary instrumentation. 
+
+Unlike the other symbolic execution systems, this system also primarily uses
+Symbolic Execution, where it attempts to explore all paths simultaneously, and
+then generates valid test cases once the paths have all been explored. While
+this works for small programs and limited tainted inputs, this can result in a
+combinatorial explosion in paths that might prevent the execution from finishing
+in any reasonable timeframe. S$^2$E also has a focus on plugins/analyzers that
+look for specific states or conditions being violated, rather than more general
+problems in the program execution, making it difficult to get the full benefits
+of a fully symbolic system.

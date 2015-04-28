@@ -1,3 +1,76 @@
 \chapter{Introduction}
+Since the start of Computer Security, the struggle between attackers and
+defenders has been about finding vulnerabilities in software and systems that
+can be exploited or protected to prevent unauthorized access. Unfortunately due
+to the asymmetric nature of attackers and defenders, where attackers only need
+to succeed at finding a single vulnerability and defenders have to find and
+remove all vulnerabilities from a system, the traditional form of bug finding
+has rarely succeeded at stopping motivated attackers.
 
+Even with systems like Bug Bounties and Vulnerability Reward Programs, where bug
+hunting is distributed among many security researchers with prizes of up to
+several tens of thousands, the number of bugs in existing systems makes it
+infeasible to find all of them and prevent attackers from exploiting
+them \cite{googlevrp}. With the ever worsening gap between attackers and
+defenders, the state of the art in finding bugs in existing code has moved from
+manual inspection of the code to find bugs, to a more automated method where we
+automatically generate inputs and test them against the binary, in the hopes
+that one of the generated inputs will result in a bug being discovered. This
+method of randomly testing inputs to cause programs to behave incorrectly is
+called \textit{Fuzzing} and was invented as early as 1988 as part of a graduate
+class \cite{fuzzingorigin}. Since those early days, the art of \textit{Fuzzing}
+has advanced to a great degree, with advancements in how test cases are actually
+generated.
 
+\textit{Fuzzing} systems tend to be divided into 2 main categories. The first is
+black-box fuzzing, where the fuzzing is performed independently of the program
+that is being analyzed, and thus tends to result in random inputs being sent to
+the binary, and results in many inputs that hit the same code path within the
+binary. As can be imagined, black-box fuzzing is fairly inefficient and can't
+completely test non-trivial binaries. The second main form of fuzzing is
+white-box fuzzing, where the fuzzer has knowledge of the binary being run, and
+can create test inputs based on this knowledge. If source code isn't available,
+this is sometimes known as grey-box fuzzing since the feedback to the fuzzer is
+from the machine code that makes up the program, rather than the original
+higher-level code. The system developed for this thesis falls into the realm of
+white-box/grey-box fuzzing since the inputs are very much determined by the
+program execution though we don't require source code.
+
+However, while most existing black-box fuzzing systems work off the idea of
+using code coverage and input mutation to generate new test cases, the system
+used in this thesis is based on \textit{Concolic Execution}. Concolic Execution
+is a specific form of more general Symbolic Execution that was created as part
+of the CUTE system \cite{cutesystem}. Symbolic Execution is a method of
+evaluating a program, either at the higher-level source code level, or in our
+case the assembly level, where each operation performed on the input data we are
+testing is stored as a symbolic expression and whenever we hit some sort of
+branch we store the branch as a place where different paths might be taken, and
+then at the end we use all the constraints and symbolic expressions to generate
+new paths through the program execution. The difference between ordinary
+Symbolic Execution and Concolic Execution is how we handle branches. In Symbolic
+Execution, whenever we reach a branch, we create a new thread that continues
+exploring down each path in the branch, and eventually all the threads complete
+and we have a massive series of constraints for all possible
+executions. Meanwhile in Concolic Execution, we initially start with some
+concrete values for the input and just explore down the path of execution that
+those values end up taking, and then we try running the program again with new
+values.
+
+By exploring the program state and building up constraints for each possible
+execution path, we can solve the constraints for different inputs that should
+travel down different parts of the program, allowing us to thouroughly test
+large swaths of the program with fewer inputs. By combining these two ideas
+together, we hopefully will have a system that can more efficiently test closed
+source programs and find vulnerabilities in them without having to wait until an
+attacker starts actively exploiting the vulnerability.
+
+In Chapter 2, we'll give an overview of existing systems in the space, as well
+as the similarities and differences with the \textit{Confuzzer} system. Next in
+Chapter 3, we'll talk about the design of the Taint Analysis and Concolic
+Execution system. Chapter 4 talks about our actual implementation of the system
+and some of the issues we've had during implementation. Then Chapter 5 will be
+our evaluation of the system and its performance on some test programs. Chapter
+6 will be about future work and improvements that can be made to the
+system. Finally, Chapter 7 concludes the discussion on our system. We also
+include an appendix showing the execution of \textit{Confuzzer} on one of our
+larger test cases.
