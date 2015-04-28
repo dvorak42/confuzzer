@@ -17,7 +17,9 @@ generate new test cases. EFS is an example of such a system, first published in
 designed, including AutoFuzz a fuzzer aimed at trying to determine network
 protocol information from an initial example of the interaction between Client
 and Server and then through additional fuzzing to generate mutations of these
-initial samples \cite{autofuzz}.
+initial samples \cite{autofuzz}. Some systems even go as far as being designed
+with zero information about the user-input and binary to allow even more general
+fuzzing \cite{zerofuzz}. 
 
 Most of these systems share a similar design in which an initial ``seed file''
 is created with examples of an input to the program, and the system then runs by
@@ -68,7 +70,7 @@ KLEE & Yes & Yes & System & LLVM Extension to provide fuzzing through concolic
 execution.\\
 SAGE & Yes & No & Binary & Windows tool for fuzzing programs using concolic
 execution.\\
-s2e & No & No & System & Path Exploration tool to analyze binaries.\\
+S$^2$E & No & No & System & Path Exploration tool to analyze binaries.\\
 \hline
 \end{tabular}
 \caption{Comparison of Symbolic Execution Systems}
@@ -81,7 +83,7 @@ sorts of analysis on the program. While almost all the Symbolic Execution
 systems have a significantly slower runtime than other Fuzzers (sometimes up to
 1000x slowdown), they do provide a significant advantage to other fuzzers, as
 they can find fewer test cases that cover more of the possible execution paths
-through the program. Some notable ones are KLEE, SAGE, and s2e. We'll briefly go
+through the program. Some notable ones are KLEE, SAGE, and S$^2$E. We'll briefly go
 over each of these to see how they compare to Confuzzer. Table
 \ref{table:othersys} also provides an overview of these systems and their
 features.
@@ -128,10 +130,10 @@ constraint and concrete value equations.
 \subsection{S$^2$E}
 S$^2$E is a system that provides automatic path exploration to allow other
 programs and plugins to perform tests across all paths that a program might
-traverse down. It provides this path exploration using a symbolic execution
-system that analyzes the program and generates new inputs so that the program
-travels down new paths. While it isn't primarily a Fuzzer, it would take little
-effort to add the necessary selectors and analyzers to S$^2$E to create a
+traverse down \cite{s2e}. It provides this path exploration using a symbolic
+execution system that analyzes the program and generates new inputs so that the
+program travels down new paths. While it isn't primarily a Fuzzer, it would take
+little effort to add the necessary selectors and analyzers to S$^2$E to create a
 fuzzing system. Unlike most of the other Symbolic Execution systems we've
 discussed, S$^2$E doesn't actually instrument the application being analyzed,
 but rather instruments the entire system to control inputs at all levels of the

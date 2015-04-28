@@ -1,0 +1,1216 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="600"
+   height="300"
+   id="svg2"
+   version="1.1"
+   inkscape:version="0.48.4 r9939"
+   sodipodi:docname="New document 1">
+  <defs
+     id="defs4">
+    <marker
+       inkscape:stockid="Arrow1Mend"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="Arrow1Mend"
+       style="overflow:visible">
+      <path
+         id="path5114"
+         d="M 0,0 5,-5 -12.5,0 5,5 0,0 z"
+         style="fill-rule:evenodd;stroke:#000000;stroke-width:1pt"
+         transform="matrix(-0.4,0,0,-0.4,-4,0)"
+         inkscape:connector-curvature="0" />
+    </marker>
+    <marker
+       inkscape:stockid="Arrow1Lend"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="Arrow1Lend"
+       style="overflow:visible">
+      <path
+         id="path5108"
+         d="M 0,0 5,-5 -12.5,0 5,5 0,0 z"
+         style="fill-rule:evenodd;stroke:#000000;stroke-width:1pt"
+         transform="matrix(-0.8,0,0,-0.8,-10,0)"
+         inkscape:connector-curvature="0" />
+    </marker>
+    <marker
+       inkscape:stockid="Arrow1Mend"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="Arrow1Mend-7"
+       style="overflow:visible">
+      <path
+         inkscape:connector-curvature="0"
+         id="path5114-0"
+         d="M 0,0 5,-5 -12.5,0 5,5 0,0 z"
+         style="fill-rule:evenodd;stroke:#000000;stroke-width:1pt"
+         transform="matrix(-0.4,0,0,-0.4,-4,0)" />
+    </marker>
+    <marker
+       inkscape:stockid="Arrow1Mend"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="Arrow1Mend-4"
+       style="overflow:visible">
+      <path
+         inkscape:connector-curvature="0"
+         id="path5114-3"
+         d="M 0,0 5,-5 -12.5,0 5,5 0,0 z"
+         style="fill-rule:evenodd;stroke:#000000;stroke-width:1pt"
+         transform="matrix(-0.4,0,0,-0.4,-4,0)" />
+    </marker>
+    <marker
+       inkscape:stockid="Arrow1Mend"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="Arrow1Mend-1"
+       style="overflow:visible">
+      <path
+         inkscape:connector-curvature="0"
+         id="path5114-7"
+         d="M 0,0 5,-5 -12.5,0 5,5 0,0 z"
+         style="fill-rule:evenodd;stroke:#000000;stroke-width:1pt"
+         transform="matrix(-0.4,0,0,-0.4,-4,0)" />
+    </marker>
+    <marker
+       inkscape:stockid="Arrow1Mend"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="Arrow1Mend-5"
+       style="overflow:visible">
+      <path
+         inkscape:connector-curvature="0"
+         id="path5114-6"
+         d="M 0,0 5,-5 -12.5,0 5,5 0,0 z"
+         style="fill-rule:evenodd;stroke:#000000;stroke-width:1pt"
+         transform="matrix(-0.4,0,0,-0.4,-4,0)" />
+    </marker>
+    <marker
+       inkscape:stockid="Arrow1Mend"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="Arrow1Mend-75"
+       style="overflow:visible">
+      <path
+         inkscape:connector-curvature="0"
+         id="path5114-4"
+         d="M 0,0 5,-5 -12.5,0 5,5 0,0 z"
+         style="fill-rule:evenodd;stroke:#000000;stroke-width:1pt"
+         transform="matrix(-0.4,0,0,-0.4,-4,0)" />
+    </marker>
+    <marker
+       inkscape:stockid="Arrow1Mend"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="Arrow1Mend-2"
+       style="overflow:visible">
+      <path
+         id="path5114-8"
+         d="M 0,0 5,-5 -12.5,0 5,5 0,0 z"
+         style="fill-rule:evenodd;stroke:#000000;stroke-width:1pt"
+         transform="matrix(-0.4,0,0,-0.4,-4,0)"
+         inkscape:connector-curvature="0" />
+    </marker>
+    <marker
+       inkscape:stockid="Arrow1Mend"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="Arrow1Mend-58"
+       style="overflow:visible">
+      <path
+         id="path5114-70"
+         d="M 0,0 5,-5 -12.5,0 5,5 0,0 z"
+         style="fill-rule:evenodd;stroke:#000000;stroke-width:1pt"
+         transform="matrix(-0.4,0,0,-0.4,-4,0)"
+         inkscape:connector-curvature="0" />
+    </marker>
+  </defs>
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="1.979899"
+     inkscape:cx="225.26016"
+     inkscape:cy="147.38198"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer1"
+     showgrid="false"
+     width="8900px"
+     inkscape:window-width="1918"
+     inkscape:window-height="1030"
+     inkscape:window-x="1680"
+     inkscape:window-y="24"
+     inkscape:window-maximized="0" />
+  <metadata
+     id="metadata7">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(0,-752.36216)">
+    <g
+       id="g3338"
+       transform="translate(8.0812204,-12.626907)">
+      <rect
+         y="778.38977"
+         x="5.6704502"
+         height="58.659103"
+         width="62.944809"
+         id="rect2985"
+         style="color:#000000;fill:none;stroke:#000000;stroke-width:0.61233002;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate" />
+      <text
+         sodipodi:linespacing="125%"
+         id="text2987"
+         y="786.64789"
+         x="8.2142887"
+         style="font-size:8px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
+         xml:space="preserve"><tspan
+           style="font-size:6px"
+           y="786.64789"
+           x="8.2142887"
+           id="tspan2989"
+           sodipodi:role="line">Tainted Addresses:</tspan><tspan
+           style="font-size:6px"
+           id="tspan2995"
+           y="794.14789"
+           x="8.2142887"
+           sodipodi:role="line" /><tspan
+           style="font-size:6px"
+           id="tspan3001"
+           y="801.64789"
+           x="8.2142887"
+           sodipodi:role="line">0x80844c, 0x808451</tspan><tspan
+           style="font-size:6px"
+           id="tspan3003"
+           y="809.14789"
+           x="8.2142887"
+           sodipodi:role="line" /><tspan
+           style="font-size:6px"
+           id="tspan3005"
+           y="816.64789"
+           x="8.2142887"
+           sodipodi:role="line">Tainted Registers:</tspan><tspan
+           style="font-size:6px"
+           id="tspan3007"
+           y="824.14789"
+           x="8.2142887"
+           sodipodi:role="line" /><tspan
+           style="font-size:6px"
+           id="tspan3009"
+           y="831.64789"
+           x="8.2142887"
+           sodipodi:role="line">RAX, RBX</tspan></text>
+    </g>
+    <text
+       xml:space="preserve"
+       style="font-size:5px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
+       x="79.866936"
+       y="771.87817"
+       id="text2987-3"
+       sodipodi:linespacing="125%"><tspan
+         sodipodi:role="line"
+         x="79.866936"
+         y="771.87817"
+         id="tspan3080"
+         style="font-size:5px">Constraints:</tspan><tspan
+         sodipodi:role="line"
+         x="79.866936"
+         y="779.37817"
+         id="tspan3082"
+         style="font-size:5px">RAX_2 = 0x80844c</tspan><tspan
+         sodipodi:role="line"
+         x="79.866936"
+         y="786.87817"
+         id="tspan3084"
+         style="font-size:5px">RBX_2 = 0x808451</tspan></text>
+    <rect
+       style="color:#000000;fill:none;stroke:#000000;stroke-width:0.61233002;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate"
+       id="rect2985-6"
+       width="62.944809"
+       height="58.659103"
+       x="77.680244"
+       y="765.76282" />
+    <flowRoot
+       xml:space="preserve"
+       id="flowRoot3184"
+       style="font-size:8px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
+       transform="matrix(1.0077887,0,0,1,-49.776916,804.02097)"><flowRegion
+         id="flowRegion3186"><rect
+           id="rect3188"
+           width="80.566917"
+           height="75.714287"
+           x="92.14286"
+           y="21.428572" /></flowRegion><flowPara
+         id="flowPara3190"
+         style="font-size:5.97676945px">main:</flowPara><flowPara
+         style="font-size:5.97676945px"
+         id="flowPara3216">mov rax, [rsi]  # rsi: 0x80844c</flowPara><flowPara
+         style="font-size:5.97676945px"
+         id="flowPara3194">mov rbx, [rsi+4]</flowPara><flowPara
+         style="font-size:5.97676945px"
+         id="flowPara3200">mov rdx, rcx</flowPara><flowPara
+         style="font-size:5.97676945px"
+         id="flowPara3206">xor rcx, rax # rcx = 0x20</flowPara><flowPara
+         style="font-size:5.97676945px"
+         id="flowPara3196">xor rax, rax</flowPara><flowPara
+         style="font-size:5.97676945px"
+         id="flowPara3208">cmp rcx, 0x79</flowPara><flowPara
+         style="font-size:5.97676945px"
+         id="flowPara3212">mov rsi, rbx</flowPara><flowPara
+         style="font-size:5.97676945px"
+         id="flowPara3214">mov rcx, rdx</flowPara><flowPara
+         style="font-size:5.97676945px"
+         id="flowPara3210">jne main</flowPara><flowPara
+         id="flowPara3192"
+         style="font-size:5.97676945px" /></flowRoot>    <g
+       transform="translate(149.54551,-13.038262)"
+       id="g3338-3">
+      <rect
+         y="778.38977"
+         x="5.6704502"
+         height="58.659103"
+         width="62.944809"
+         id="rect2985-1"
+         style="color:#000000;fill:none;stroke:#000000;stroke-width:0.61233002;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate" />
+      <text
+         sodipodi:linespacing="125%"
+         id="text2987-4"
+         y="786.64789"
+         x="8.2142887"
+         style="font-size:8px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
+         xml:space="preserve"><tspan
+           style="font-size:6px"
+           y="786.64789"
+           x="8.2142887"
+           id="tspan2989-5"
+           sodipodi:role="line">Tainted Addresses:</tspan><tspan
+           style="font-size:6px"
+           id="tspan2995-3"
+           y="794.14789"
+           x="8.2142887"
+           sodipodi:role="line" /><tspan
+           style="font-size:6px"
+           id="tspan3001-2"
+           y="801.64789"
+           x="8.2142887"
+           sodipodi:role="line">0x80844c, 0x808451</tspan><tspan
+           style="font-size:6px"
+           id="tspan3003-6"
+           y="809.14789"
+           x="8.2142887"
+           sodipodi:role="line" /><tspan
+           style="font-size:6px"
+           id="tspan3005-1"
+           y="816.64789"
+           x="8.2142887"
+           sodipodi:role="line">Tainted Registers:</tspan><tspan
+           style="font-size:6px"
+           id="tspan3007-6"
+           y="824.14789"
+           x="8.2142887"
+           sodipodi:role="line" /><tspan
+           style="font-size:6px"
+           id="tspan3009-2"
+           y="831.64789"
+           x="8.2142887"
+           sodipodi:role="line">RAX, RBX</tspan></text>
+    </g>
+    <text
+       xml:space="preserve"
+       style="font-size:5px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
+       x="221.33122"
+       y="771.46686"
+       id="text2987-3-2"
+       sodipodi:linespacing="125%"><tspan
+         sodipodi:role="line"
+         x="221.33122"
+         y="771.46686"
+         id="tspan3080-8"
+         style="font-size:5px">Constraints:</tspan><tspan
+         sodipodi:role="line"
+         x="221.33122"
+         y="778.96686"
+         id="tspan3082-4"
+         style="font-size:5px">RAX_2 = 0x80844c</tspan><tspan
+         sodipodi:role="line"
+         x="221.33122"
+         y="786.46686"
+         id="tspan3084-0"
+         style="font-size:5px">RBX_2 = 0x808451</tspan></text>
+    <rect
+       style="color:#000000;fill:none;stroke:#000000;stroke-width:0.61233002;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate"
+       id="rect2985-6-1"
+       width="62.944809"
+       height="58.659103"
+       x="219.14453"
+       y="765.3515" />
+    <flowRoot
+       xml:space="preserve"
+       id="flowRoot3184-8"
+       style="font-size:8px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
+       transform="matrix(1.0077887,0,0,1,91.68737,803.60961)"><flowRegion
+         id="flowRegion3186-9"><rect
+           id="rect3188-2"
+           width="80.566917"
+           height="75.714287"
+           x="92.14286"
+           y="21.428572" /></flowRegion><flowPara
+         id="flowPara3190-9"
+         style="font-size:5.97676945px">main:</flowPara><flowPara
+         style="font-size:5.97676945px"
+         id="flowPara3216-7">mov rax, [rsi]  # rsi: 0x80844c</flowPara><flowPara
+         style="font-size:5.97676945px"
+         id="flowPara3194-0">mov rbx, [rsi+4]</flowPara><flowPara
+         style="font-size:5.97676945px"
+         id="flowPara3200-7">mov rdx, rcx</flowPara><flowPara
+         style="font-size:5.97676945px"
+         id="flowPara3206-1">xor rcx, rax # rcx = 0x20</flowPara><flowPara
+         style="font-size:5.97676945px"
+         id="flowPara3196-1">xor rax, rax</flowPara><flowPara
+         style="font-size:5.97676945px"
+         id="flowPara3208-3">cmp rcx, 0x79</flowPara><flowPara
+         style="font-size:5.97676945px"
+         id="flowPara3212-7">mov rsi, rbx</flowPara><flowPara
+         style="font-size:5.97676945px"
+         id="flowPara3214-6">mov rcx, rdx</flowPara><flowPara
+         style="font-size:5.97676945px"
+         id="flowPara3210-9">jne main</flowPara><flowPara
+         id="flowPara3192-0"
+         style="font-size:5.97676945px" /></flowRoot>    <g
+       transform="translate(289.61694,-13.10968)"
+       id="g3338-3-2">
+      <rect
+         y="778.38977"
+         x="5.6704502"
+         height="58.659103"
+         width="62.944809"
+         id="rect2985-1-5"
+         style="color:#000000;fill:none;stroke:#000000;stroke-width:0.61233002;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate" />
+      <text
+         sodipodi:linespacing="125%"
+         id="text2987-4-2"
+         y="786.64789"
+         x="8.2142887"
+         style="font-size:8px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
+         xml:space="preserve"><tspan
+           style="font-size:6px"
+           y="786.64789"
+           x="8.2142887"
+           id="tspan2989-5-7"
+           sodipodi:role="line">Tainted Addresses:</tspan><tspan
+           style="font-size:6px"
+           id="tspan2995-3-0"
+           y="794.14789"
+           x="8.2142887"
+           sodipodi:role="line" /><tspan
+           style="font-size:6px"
+           id="tspan3001-2-7"
+           y="801.64789"
+           x="8.2142887"
+           sodipodi:role="line">0x80844c, 0x808451</tspan><tspan
+           style="font-size:6px"
+           id="tspan3003-6-1"
+           y="809.14789"
+           x="8.2142887"
+           sodipodi:role="line" /><tspan
+           style="font-size:6px"
+           id="tspan3005-1-8"
+           y="816.64789"
+           x="8.2142887"
+           sodipodi:role="line">Tainted Registers:</tspan><tspan
+           style="font-size:6px"
+           id="tspan3007-6-9"
+           y="824.14789"
+           x="8.2142887"
+           sodipodi:role="line" /><tspan
+           style="font-size:6px"
+           id="tspan3009-2-7"
+           y="831.64789"
+           x="8.2142887"
+           sodipodi:role="line">RAX, RBX, RCX</tspan></text>
+    </g>
+    <text
+       xml:space="preserve"
+       style="font-size:5px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
+       x="361.40265"
+       y="771.39539"
+       id="text2987-3-2-0"
+       sodipodi:linespacing="125%"><tspan
+         sodipodi:role="line"
+         x="361.40265"
+         y="771.39539"
+         id="tspan3080-8-1"
+         style="font-size:5px">Constraints:</tspan><tspan
+         sodipodi:role="line"
+         x="361.40265"
+         y="777.64539"
+         id="tspan3082-4-1"
+         style="font-size:5px">RAX_2 = 0x80844c</tspan><tspan
+         sodipodi:role="line"
+         x="361.40265"
+         y="783.89539"
+         id="tspan3084-0-6"
+         style="font-size:5px">RBX_2 = 0x808451</tspan><tspan
+         id="tspan6027"
+         sodipodi:role="line"
+         x="361.40265"
+         y="790.14539"
+         style="font-size:5px">RCX_2 = RAX_2 ^ 0x20</tspan></text>
+    <rect
+       style="color:#000000;fill:none;stroke:#000000;stroke-width:0.61233002;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate"
+       id="rect2985-6-1-3"
+       width="62.944809"
+       height="58.659103"
+       x="359.21597"
+       y="765.28003" />
+    <flowRoot
+       xml:space="preserve"
+       id="flowRoot3184-8-4"
+       style="font-size:8px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
+       transform="matrix(1.0077887,0,0,1,231.7588,803.53819)"><flowRegion
+         id="flowRegion3186-9-7"><rect
+           id="rect3188-2-5"
+           width="80.566917"
+           height="75.714287"
+           x="92.14286"
+           y="21.428572" /></flowRegion><flowPara
+         id="flowPara3190-9-6"
+         style="font-size:5.97676945px">main:</flowPara><flowPara
+         style="font-size:5.97676945px"
+         id="flowPara3216-7-6">mov rax, [rsi]  # rsi: 0x80844c</flowPara><flowPara
+         style="font-size:5.97676945px"
+         id="flowPara3194-0-2">mov rbx, [rsi+4]</flowPara><flowPara
+         style="font-size:5.97676945px"
+         id="flowPara3200-7-9">mov rdx, rcx</flowPara><flowPara
+         style="font-size:5.97676945px"
+         id="flowPara3206-1-6">xor rcx, rax # rcx = 0x20</flowPara><flowPara
+         style="font-size:5.97676945px"
+         id="flowPara3196-1-5">xor rax, rax</flowPara><flowPara
+         style="font-size:5.97676945px"
+         id="flowPara3208-3-2">cmp rcx, 0x79</flowPara><flowPara
+         style="font-size:5.97676945px"
+         id="flowPara3212-7-9">mov rsi, rbx</flowPara><flowPara
+         style="font-size:5.97676945px"
+         id="flowPara3214-6-4">mov rcx, rdx</flowPara><flowPara
+         style="font-size:5.97676945px"
+         id="flowPara3210-9-9">jne main</flowPara><flowPara
+         id="flowPara3192-0-1"
+         style="font-size:5.97676945px" /></flowRoot>    <g
+       transform="translate(8.2062221,130.70313)"
+       id="g3338-4">
+      <rect
+         y="778.38977"
+         x="5.6704502"
+         height="58.659103"
+         width="62.944809"
+         id="rect2985-3"
+         style="color:#000000;fill:none;stroke:#000000;stroke-width:0.61233002;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate" />
+      <text
+         sodipodi:linespacing="125%"
+         id="text2987-6"
+         y="786.64789"
+         x="8.2142887"
+         style="font-size:8px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
+         xml:space="preserve"><tspan
+           style="font-size:6px"
+           y="786.64789"
+           x="8.2142887"
+           id="tspan2989-6"
+           sodipodi:role="line">Tainted Addresses:</tspan><tspan
+           style="font-size:6px"
+           id="tspan2995-2"
+           y="794.14789"
+           x="8.2142887"
+           sodipodi:role="line" /><tspan
+           style="font-size:6px"
+           id="tspan3001-6"
+           y="801.64789"
+           x="8.2142887"
+           sodipodi:role="line">0x80844c, 0x808451</tspan><tspan
+           style="font-size:6px"
+           id="tspan3003-4"
+           y="809.14789"
+           x="8.2142887"
+           sodipodi:role="line" /><tspan
+           style="font-size:6px"
+           id="tspan3005-4"
+           y="816.64789"
+           x="8.2142887"
+           sodipodi:role="line">Tainted Registers:</tspan><tspan
+           style="font-size:6px"
+           id="tspan3007-7"
+           y="824.14789"
+           x="8.2142887"
+           sodipodi:role="line" /><tspan
+           style="font-size:6px"
+           id="tspan3009-5"
+           y="831.64789"
+           x="8.2142887"
+           sodipodi:role="line">RBX, RCX, RFLAGS</tspan></text>
+    </g>
+    <text
+       xml:space="preserve"
+       style="font-size:5px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
+       x="79.991943"
+       y="915.20825"
+       id="text2987-3-0"
+       sodipodi:linespacing="125%"><tspan
+         sodipodi:role="line"
+         x="79.991943"
+         y="915.20825"
+         id="tspan3080-5"
+         style="font-size:5px">Constraints:</tspan><tspan
+         sodipodi:role="line"
+         x="79.991943"
+         y="921.45825"
+         id="tspan3082-5"
+         style="font-size:5px">RAX_2 = 0x80844c</tspan><tspan
+         sodipodi:role="line"
+         x="79.991943"
+         y="927.70825"
+         id="tspan3084-3"
+         style="font-size:5px">RBX_2 = 0x808451</tspan><tspan
+         sodipodi:role="line"
+         x="79.991943"
+         y="933.95825"
+         style="font-size:5px"
+         id="tspan6076">RCX_2 = RAX_2 ^ 0x20</tspan><tspan
+         sodipodi:role="line"
+         x="79.991943"
+         y="940.20825"
+         style="font-size:5px"
+         id="tspan6078">RFLAGS = 0x79 - RCX_2</tspan></text>
+    <rect
+       style="color:#000000;fill:none;stroke:#000000;stroke-width:0.61233002;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate"
+       id="rect2985-6-10"
+       width="62.944809"
+       height="58.659103"
+       x="77.805244"
+       y="909.0929" />
+    <flowRoot
+       xml:space="preserve"
+       id="flowRoot3184-7"
+       style="font-size:8px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
+       transform="matrix(1.0077887,0,0,1,-49.651914,947.35101)"><flowRegion
+         id="flowRegion3186-8"><rect
+           id="rect3188-5"
+           width="80.566917"
+           height="75.714287"
+           x="92.14286"
+           y="21.428572" /></flowRegion><flowPara
+         id="flowPara3190-3"
+         style="font-size:5.97676945px">main:</flowPara><flowPara
+         style="font-size:5.97676945px"
+         id="flowPara3216-79">mov rax, [rsi]  # rsi: 0x80844c</flowPara><flowPara
+         style="font-size:5.97676945px"
+         id="flowPara3194-4">mov rbx, [rsi+4]</flowPara><flowPara
+         style="font-size:5.97676945px"
+         id="flowPara3200-3">mov rdx, rcx</flowPara><flowPara
+         style="font-size:5.97676945px"
+         id="flowPara3206-4">xor rcx, rax # rcx = 0x20</flowPara><flowPara
+         style="font-size:5.97676945px"
+         id="flowPara3196-7">xor rax, rax</flowPara><flowPara
+         style="font-size:5.97676945px"
+         id="flowPara3208-4">cmp rcx, 0x79</flowPara><flowPara
+         style="font-size:5.97676945px"
+         id="flowPara3212-8">mov rsi, rbx</flowPara><flowPara
+         style="font-size:5.97676945px"
+         id="flowPara3214-8">mov rcx, rdx</flowPara><flowPara
+         style="font-size:5.97676945px"
+         id="flowPara3210-5">jne main</flowPara><flowPara
+         id="flowPara3192-5"
+         style="font-size:5.97676945px" /></flowRoot>    <g
+       transform="translate(149.67051,130.29178)"
+       id="g3338-3-1">
+      <rect
+         y="778.38977"
+         x="5.6704502"
+         height="58.659103"
+         width="62.944809"
+         id="rect2985-1-1"
+         style="color:#000000;fill:none;stroke:#000000;stroke-width:0.61233002;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate" />
+      <text
+         sodipodi:linespacing="125%"
+         id="text2987-4-1"
+         y="786.64789"
+         x="8.2142887"
+         style="font-size:8px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
+         xml:space="preserve"><tspan
+           style="font-size:6px"
+           y="786.64789"
+           x="8.2142887"
+           id="tspan2989-5-4"
+           sodipodi:role="line">Tainted Addresses:</tspan><tspan
+           style="font-size:6px"
+           id="tspan2995-3-07"
+           y="794.14789"
+           x="8.2142887"
+           sodipodi:role="line" /><tspan
+           style="font-size:6px"
+           id="tspan3001-2-8"
+           y="801.64789"
+           x="8.2142887"
+           sodipodi:role="line">0x80844c, 0x808451</tspan><tspan
+           style="font-size:6px"
+           id="tspan3003-6-7"
+           y="809.14789"
+           x="8.2142887"
+           sodipodi:role="line" /><tspan
+           style="font-size:6px"
+           id="tspan3005-1-2"
+           y="816.64789"
+           x="8.2142887"
+           sodipodi:role="line">Tainted Registers:</tspan><tspan
+           style="font-size:6px"
+           id="tspan3009-2-77"
+           y="824.14789"
+           x="8.2142887"
+           sodipodi:role="line">RBX, RCX, RFLAGS,</tspan><tspan
+           style="font-size:6px"
+           y="831.64789"
+           x="8.2142887"
+           sodipodi:role="line"
+           id="tspan6080">RSI</tspan></text>
+    </g>
+    <text
+       xml:space="preserve"
+       style="font-size:5px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
+       x="221.45622"
+       y="914.79688"
+       id="text2987-3-2-01"
+       sodipodi:linespacing="125%"><tspan
+         sodipodi:role="line"
+         x="221.45622"
+         y="914.79688"
+         id="tspan3080-8-19"
+         style="font-size:5px">Constraints:</tspan><tspan
+         sodipodi:role="line"
+         x="221.45622"
+         y="921.04688"
+         id="tspan3082-4-16"
+         style="font-size:5px">RAX_2 = 0x80844c</tspan><tspan
+         sodipodi:role="line"
+         x="221.45622"
+         y="927.29688"
+         id="tspan3084-0-4"
+         style="font-size:5px">RBX_2 = 0x808451</tspan><tspan
+         sodipodi:role="line"
+         x="221.45622"
+         y="933.54688"
+         style="font-size:5px"
+         id="tspan6084">RCX_2 = RAX_2 ^ 0x20</tspan><tspan
+         sodipodi:role="line"
+         x="221.45622"
+         y="939.79688"
+         style="font-size:5px"
+         id="tspan6086">RFLAGS = 0x79 - RCX_2</tspan><tspan
+         sodipodi:role="line"
+         x="221.45622"
+         y="946.04688"
+         style="font-size:5px"
+         id="tspan6088">RSI_2 = RBX_2</tspan></text>
+    <rect
+       style="color:#000000;fill:none;stroke:#000000;stroke-width:0.61233002;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate"
+       id="rect2985-6-1-8"
+       width="62.944809"
+       height="58.659103"
+       x="219.26953"
+       y="908.68152" />
+    <flowRoot
+       xml:space="preserve"
+       id="flowRoot3184-8-6"
+       style="font-size:8px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
+       transform="matrix(1.0077887,0,0,1,91.812372,946.93965)"><flowRegion
+         id="flowRegion3186-9-9"><rect
+           id="rect3188-2-3"
+           width="80.566917"
+           height="75.714287"
+           x="92.14286"
+           y="21.428572" /></flowRegion><flowPara
+         id="flowPara3190-9-2"
+         style="font-size:5.97676945px">main:</flowPara><flowPara
+         style="font-size:5.97676945px"
+         id="flowPara3216-7-60">mov rax, [rsi]  # rsi: 0x80844c</flowPara><flowPara
+         style="font-size:5.97676945px"
+         id="flowPara3194-0-3">mov rbx, [rsi+4]</flowPara><flowPara
+         style="font-size:5.97676945px"
+         id="flowPara3200-7-4">mov rdx, rcx</flowPara><flowPara
+         style="font-size:5.97676945px"
+         id="flowPara3206-1-5">xor rcx, rax # rcx = 0x20</flowPara><flowPara
+         style="font-size:5.97676945px"
+         id="flowPara3196-1-8">xor rax, rax</flowPara><flowPara
+         style="font-size:5.97676945px"
+         id="flowPara3208-3-5">cmp rcx, 0x79</flowPara><flowPara
+         style="font-size:5.97676945px"
+         id="flowPara3212-7-91">mov rsi, rbx</flowPara><flowPara
+         style="font-size:5.97676945px"
+         id="flowPara3214-6-1">mov rcx, rdx</flowPara><flowPara
+         style="font-size:5.97676945px"
+         id="flowPara3210-9-99">jne main</flowPara><flowPara
+         id="flowPara3192-0-18"
+         style="font-size:5.97676945px" /></flowRoot>    <g
+       transform="translate(289.74194,130.22036)"
+       id="g3338-3-2-1">
+      <rect
+         y="778.38977"
+         x="5.6704502"
+         height="58.659103"
+         width="62.944809"
+         id="rect2985-1-5-5"
+         style="color:#000000;fill:none;stroke:#000000;stroke-width:0.61233002;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate" />
+      <text
+         sodipodi:linespacing="125%"
+         id="text2987-4-2-5"
+         y="786.64789"
+         x="8.2142887"
+         style="font-size:8px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
+         xml:space="preserve"><tspan
+           style="font-size:6px"
+           y="786.64789"
+           x="8.2142887"
+           id="tspan2989-5-7-1"
+           sodipodi:role="line">Tainted Addresses:</tspan><tspan
+           style="font-size:6px"
+           id="tspan2995-3-0-3"
+           y="794.14789"
+           x="8.2142887"
+           sodipodi:role="line" /><tspan
+           style="font-size:6px"
+           id="tspan3001-2-7-7"
+           y="801.64789"
+           x="8.2142887"
+           sodipodi:role="line">0x80844c, 0x808451</tspan><tspan
+           style="font-size:6px"
+           id="tspan3003-6-1-4"
+           y="809.14789"
+           x="8.2142887"
+           sodipodi:role="line" /><tspan
+           style="font-size:6px"
+           id="tspan3005-1-8-4"
+           y="816.64789"
+           x="8.2142887"
+           sodipodi:role="line">Tainted Registers:</tspan><tspan
+           style="font-size:6px"
+           id="tspan3007-6-9-6"
+           y="824.14789"
+           x="8.2142887"
+           sodipodi:role="line" /><tspan
+           style="font-size:6px"
+           id="tspan3009-2-7-5"
+           y="831.64789"
+           x="8.2142887"
+           sodipodi:role="line">RBX, RFLAGS, RSI</tspan></text>
+    </g>
+    <text
+       xml:space="preserve"
+       style="font-size:5px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
+       x="361.52765"
+       y="914.72546"
+       id="text2987-3-2-0-0"
+       sodipodi:linespacing="125%"><tspan
+         sodipodi:role="line"
+         x="361.52765"
+         y="914.72546"
+         id="tspan3084-0-6-1"
+         style="font-size:5px">Constraints:</tspan><tspan
+         sodipodi:role="line"
+         x="361.52765"
+         y="920.97546"
+         style="font-size:5px"
+         id="tspan6095">RAX_2 = 0x80844c</tspan><tspan
+         sodipodi:role="line"
+         x="361.52765"
+         y="927.22546"
+         style="font-size:5px"
+         id="tspan6097">RBX_2 = 0x808451</tspan><tspan
+         sodipodi:role="line"
+         x="361.52765"
+         y="933.47546"
+         style="font-size:5px"
+         id="tspan6099">RCX_2 = RAX_2 ^ 0x20</tspan><tspan
+         sodipodi:role="line"
+         x="361.52765"
+         y="939.72546"
+         style="font-size:5px"
+         id="tspan6101">RFLAGS = 0x79 - RCX_2</tspan><tspan
+         sodipodi:role="line"
+         x="361.52765"
+         y="945.97546"
+         style="font-size:5px"
+         id="tspan6103">RSI_2 = RBX_2</tspan></text>
+    <rect
+       style="color:#000000;fill:none;stroke:#000000;stroke-width:0.61233002;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate"
+       id="rect2985-6-1-3-1"
+       width="62.944809"
+       height="58.659103"
+       x="359.34097"
+       y="908.61011" />
+    <flowRoot
+       xml:space="preserve"
+       id="flowRoot3184-8-4-3"
+       style="font-size:8px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
+       transform="matrix(1.0077887,0,0,1,231.8838,946.86823)"><flowRegion
+         id="flowRegion3186-9-7-7"><rect
+           id="rect3188-2-5-1"
+           width="80.566917"
+           height="75.714287"
+           x="92.14286"
+           y="21.428572" /></flowRegion><flowPara
+         id="flowPara3190-9-6-6"
+         style="font-size:5.97676945px">main:</flowPara><flowPara
+         style="font-size:5.97676945px"
+         id="flowPara3216-7-6-3">mov rax, [rsi]  # rsi: 0x80844c</flowPara><flowPara
+         style="font-size:5.97676945px"
+         id="flowPara3194-0-2-9">mov rbx, [rsi+4]</flowPara><flowPara
+         style="font-size:5.97676945px"
+         id="flowPara3200-7-9-6">mov rdx, rcx</flowPara><flowPara
+         style="font-size:5.97676945px"
+         id="flowPara3206-1-6-1">xor rcx, rax # rcx = 0x20</flowPara><flowPara
+         style="font-size:5.97676945px"
+         id="flowPara3196-1-5-8">xor rax, rax</flowPara><flowPara
+         style="font-size:5.97676945px"
+         id="flowPara3208-3-2-8">cmp rcx, 0x79</flowPara><flowPara
+         style="font-size:5.97676945px"
+         id="flowPara3212-7-9-2">mov rsi, rbx</flowPara><flowPara
+         style="font-size:5.97676945px"
+         id="flowPara3214-6-4-9">mov rcx, rdx</flowPara><flowPara
+         style="font-size:5.97676945px"
+         id="flowPara3210-9-9-7">jne main</flowPara><flowPara
+         id="flowPara3192-0-1-6"
+         style="font-size:5.97676945px" /></flowRoot>    <path
+       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-start:none;marker-end:url(#Arrow1Mend)"
+       d="m 29.509792,845.09239 10,0"
+       id="path4151"
+       inkscape:connector-curvature="0" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-start:none;marker-end:url(#Arrow1Mend)"
+       d="m 171.27765,851.8781 10,0"
+       id="path4151-1"
+       inkscape:connector-curvature="0" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-start:none;marker-end:url(#Arrow1Mend)"
+       d="m 311.99193,859.02096 10,0"
+       id="path4151-4"
+       inkscape:connector-curvature="0" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-start:none;marker-end:url(#Arrow1Mend)"
+       d="m 30.563363,1018.3781 10,0"
+       id="path4151-19"
+       inkscape:connector-curvature="0" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-start:none;marker-end:url(#Arrow1Mend)"
+       d="m 171.6348,1025.521 10,0"
+       id="path4151-13"
+       inkscape:connector-curvature="0" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-start:none;marker-end:url(#Arrow1Mend)"
+       d="m 311.6348,1032.521 10,0"
+       id="path4151-0"
+       inkscape:connector-curvature="0" />
+    <g
+       transform="translate(429.36253,-13.649981)"
+       id="g3338-3-2-9">
+      <rect
+         y="778.38977"
+         x="5.6704502"
+         height="58.659103"
+         width="62.944809"
+         id="rect2985-1-5-8"
+         style="color:#000000;fill:none;stroke:#000000;stroke-width:0.61233002;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate" />
+      <text
+         sodipodi:linespacing="125%"
+         id="text2987-4-2-7"
+         y="786.64789"
+         x="8.2142887"
+         style="font-size:8px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
+         xml:space="preserve"><tspan
+           style="font-size:6px"
+           y="786.64789"
+           x="8.2142887"
+           id="tspan2989-5-7-5"
+           sodipodi:role="line">Tainted Addresses:</tspan><tspan
+           style="font-size:6px"
+           id="tspan2995-3-0-9"
+           y="794.14789"
+           x="8.2142887"
+           sodipodi:role="line" /><tspan
+           style="font-size:6px"
+           id="tspan3001-2-7-75"
+           y="801.64789"
+           x="8.2142887"
+           sodipodi:role="line">0x80844c, 0x808451</tspan><tspan
+           style="font-size:6px"
+           id="tspan3003-6-1-3"
+           y="809.14789"
+           x="8.2142887"
+           sodipodi:role="line" /><tspan
+           style="font-size:6px"
+           id="tspan3005-1-8-8"
+           y="816.64789"
+           x="8.2142887"
+           sodipodi:role="line">Tainted Registers:</tspan><tspan
+           style="font-size:6px"
+           id="tspan3007-6-9-2"
+           y="824.14789"
+           x="8.2142887"
+           sodipodi:role="line" /><tspan
+           style="font-size:6px"
+           id="tspan3009-2-7-9"
+           y="831.64789"
+           x="8.2142887"
+           sodipodi:role="line">RBX, RCX</tspan></text>
+    </g>
+    <text
+       xml:space="preserve"
+       style="font-size:5px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
+       x="501.14825"
+       y="770.8551"
+       id="text2987-3-2-0-5"
+       sodipodi:linespacing="125%"><tspan
+         sodipodi:role="line"
+         x="501.14825"
+         y="770.8551"
+         id="tspan3080-8-1-2"
+         style="font-size:5px">Constraints:</tspan><tspan
+         sodipodi:role="line"
+         x="501.14825"
+         y="777.1051"
+         id="tspan3082-4-1-98"
+         style="font-size:5px">RAX_2 = 0x80844c</tspan><tspan
+         sodipodi:role="line"
+         x="501.14825"
+         y="783.3551"
+         id="tspan3084-0-6-9"
+         style="font-size:5px">RBX_2 = 0x808451</tspan><tspan
+         sodipodi:role="line"
+         x="501.14825"
+         y="789.6051"
+         style="font-size:5px"
+         id="tspan6070">RCX_2 = RAX_2 ^ 0x20</tspan></text>
+    <rect
+       style="color:#000000;fill:none;stroke:#000000;stroke-width:0.61233002;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate"
+       id="rect2985-6-1-3-2"
+       width="62.944809"
+       height="58.659103"
+       x="498.96155"
+       y="764.73975" />
+    <flowRoot
+       xml:space="preserve"
+       id="flowRoot3184-8-4-6"
+       style="font-size:8px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
+       transform="matrix(1.0077887,0,0,1,371.50439,802.99789)"><flowRegion
+         id="flowRegion3186-9-7-0"><rect
+           id="rect3188-2-5-3"
+           width="80.566917"
+           height="75.714287"
+           x="92.14286"
+           y="21.428572" /></flowRegion><flowPara
+         id="flowPara3190-9-6-3"
+         style="font-size:5.97676945px">main:</flowPara><flowPara
+         style="font-size:5.97676945px"
+         id="flowPara3216-7-6-6">mov rax, [rsi]  # rsi: 0x80844c</flowPara><flowPara
+         style="font-size:5.97676945px"
+         id="flowPara3194-0-2-6">mov rbx, [rsi+4]</flowPara><flowPara
+         style="font-size:5.97676945px"
+         id="flowPara3200-7-9-65">mov rdx, rcx</flowPara><flowPara
+         style="font-size:5.97676945px"
+         id="flowPara3206-1-6-12">xor rcx, rax # rcx = 0x20</flowPara><flowPara
+         style="font-size:5.97676945px"
+         id="flowPara3196-1-5-5">xor rax, rax</flowPara><flowPara
+         style="font-size:5.97676945px"
+         id="flowPara3208-3-2-6">cmp rcx, 0x79</flowPara><flowPara
+         style="font-size:5.97676945px"
+         id="flowPara3212-7-9-0">mov rsi, rbx</flowPara><flowPara
+         style="font-size:5.97676945px"
+         id="flowPara3214-6-4-6">mov rcx, rdx</flowPara><flowPara
+         style="font-size:5.97676945px"
+         id="flowPara3210-9-9-4">jne main</flowPara><flowPara
+         id="flowPara3192-0-1-9"
+         style="font-size:5.97676945px" /></flowRoot>    <path
+       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-start:none;marker-end:url(#Arrow1Mend)"
+       d="m 451.23244,866.0568 10,0"
+       id="path4151-4-2"
+       inkscape:connector-curvature="0" />
+    <g
+       transform="translate(429.40314,130.4541)"
+       id="g3338-3-2-9-6">
+      <rect
+         y="778.38977"
+         x="5.6704502"
+         height="58.659103"
+         width="62.944809"
+         id="rect2985-1-5-8-2"
+         style="color:#000000;fill:none;stroke:#000000;stroke-width:0.61233002;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate" />
+      <text
+         sodipodi:linespacing="125%"
+         id="text2987-4-2-7-2"
+         y="786.64789"
+         x="8.2142887"
+         style="font-size:8px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
+         xml:space="preserve"><tspan
+           style="font-size:6px"
+           id="tspan3009-2-7-9-4"
+           y="786.64789"
+           x="8.2142887"
+           sodipodi:role="line">Tainted Addresses:</tspan><tspan
+           style="font-size:6px"
+           y="794.14789"
+           x="8.2142887"
+           sodipodi:role="line"
+           id="tspan6132"></tspan><tspan
+           style="font-size:6px"
+           y="801.64789"
+           x="8.2142887"
+           sodipodi:role="line"
+           id="tspan6134">0x80844c, 0x808451</tspan><tspan
+           style="font-size:6px"
+           y="809.14789"
+           x="8.2142887"
+           sodipodi:role="line"
+           id="tspan6136"></tspan><tspan
+           style="font-size:6px"
+           y="816.64789"
+           x="8.2142887"
+           sodipodi:role="line"
+           id="tspan6138">Tainted Registers:</tspan><tspan
+           style="font-size:6px"
+           y="824.14789"
+           x="8.2142887"
+           sodipodi:role="line"
+           id="tspan6140"></tspan><tspan
+           style="font-size:6px"
+           y="831.64789"
+           x="8.2142887"
+           sodipodi:role="line"
+           id="tspan6142">RBX, RFLAGS, RSI</tspan></text>
+    </g>
+    <text
+       xml:space="preserve"
+       style="font-size:5px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
+       x="501.18884"
+       y="914.95917"
+       id="text2987-3-2-0-5-5"
+       sodipodi:linespacing="125%"><tspan
+         sodipodi:role="line"
+         x="501.18884"
+         y="914.95917"
+         id="tspan3084-0-6-9-3"
+         style="font-size:5px">Constraints:</tspan><tspan
+         sodipodi:role="line"
+         x="501.18884"
+         y="921.20917"
+         style="font-size:5px"
+         id="tspan6149">RAX_2 = 0x80844c</tspan><tspan
+         sodipodi:role="line"
+         x="501.18884"
+         y="927.45917"
+         style="font-size:5px"
+         id="tspan6151">RBX_2 = 0x808451</tspan><tspan
+         sodipodi:role="line"
+         x="501.18884"
+         y="933.70917"
+         style="font-size:5px"
+         id="tspan6153">RCX_2 = RAX_2 ^ 0x20</tspan><tspan
+         sodipodi:role="line"
+         x="501.18884"
+         y="939.95917"
+         style="font-size:5px"
+         id="tspan6155">RFLAGS = 0x79 - RCX_2</tspan><tspan
+         sodipodi:role="line"
+         x="501.18884"
+         y="946.20917"
+         style="font-size:5px"
+         id="tspan6157">RSI_2 = RBX_2</tspan><tspan
+         sodipodi:role="line"
+         x="501.18884"
+         y="952.45917"
+         style="font-size:5px"
+         id="tspan6159" /><tspan
+         sodipodi:role="line"
+         x="501.18884"
+         y="958.70917"
+         style="font-size:5px"
+         id="tspan6161">Branches:</tspan><tspan
+         sodipodi:role="line"
+         x="501.18884"
+         y="964.95917"
+         style="font-size:5px"
+         id="tspan6163">main: RFLAGS != 0</tspan></text>
+    <rect
+       style="color:#000000;fill:none;stroke:#000000;stroke-width:0.61233002;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate"
+       id="rect2985-6-1-3-2-6"
+       width="62.944809"
+       height="58.659103"
+       x="499.00217"
+       y="908.84381" />
+    <flowRoot
+       xml:space="preserve"
+       id="flowRoot3184-8-4-6-6"
+       style="font-size:8px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
+       transform="matrix(1.0077887,0,0,1,371.545,947.10196)"><flowRegion
+         id="flowRegion3186-9-7-0-8"><rect
+           id="rect3188-2-5-3-7"
+           width="80.566917"
+           height="75.714287"
+           x="92.14286"
+           y="21.428572" /></flowRegion><flowPara
+         id="flowPara3190-9-6-3-9"
+         style="font-size:5.97676945px">main:</flowPara><flowPara
+         style="font-size:5.97676945px"
+         id="flowPara3216-7-6-6-6">mov rax, [rsi]  # rsi: 0x80844c</flowPara><flowPara
+         style="font-size:5.97676945px"
+         id="flowPara3194-0-2-6-3">mov rbx, [rsi+4]</flowPara><flowPara
+         style="font-size:5.97676945px"
+         id="flowPara3200-7-9-65-1">mov rdx, rcx</flowPara><flowPara
+         style="font-size:5.97676945px"
+         id="flowPara3206-1-6-12-2">xor rcx, rax # rcx = 0x20</flowPara><flowPara
+         style="font-size:5.97676945px"
+         id="flowPara3196-1-5-5-7">xor rax, rax</flowPara><flowPara
+         style="font-size:5.97676945px"
+         id="flowPara3208-3-2-6-1">cmp rcx, 0x79</flowPara><flowPara
+         style="font-size:5.97676945px"
+         id="flowPara3212-7-9-0-6">mov rsi, rbx</flowPara><flowPara
+         style="font-size:5.97676945px"
+         id="flowPara3214-6-4-6-4">mov rcx, rdx</flowPara><flowPara
+         style="font-size:5.97676945px"
+         id="flowPara3210-9-9-4-1">jne main</flowPara><flowPara
+         id="flowPara3192-0-1-9-4"
+         style="font-size:5.97676945px" /></flowRoot>    <path
+       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-start:none;marker-end:url(#Arrow1Mend)"
+       d="m 451.27305,1039.9603 10,0"
+       id="path4151-4-2-7"
+       inkscape:connector-curvature="0" />
+  </g>
+</svg>
