@@ -1,1 +1,62 @@
 \chapter{Future Work}
+While we currently have a working system, there is still a lot of work that can
+be done to improve the overall system and create a more efficient and useful
+system. Similar to the Design, we can split this into two major categories of
+work, work for the Taint system and work for the Concolic Execution system.
+
+\section{Taint Analysis Improvements}
+One of the major improvements to the Taint Analysis system is to switch from
+using Intel PIN to another instrumentation tool. Some options to explore, given
+other Taint Analysis and fuzzing tools are using DynamoRIO as its support
+improves, using full-system emulation, and finally using QEMU's user mode
+emulation. The final option seems to be most likely to give improved results,
+given the success that AFL has had with it.
+
+In addition to switching the Taint Analysis to a different system, we can also
+reduce the set of instructions that we have to examine by detecting standard
+functions that we trust and instead of instrumenting the function execution, we
+add special constraint equations to the Taint log. One example is being able to
+detect strcmp and other related functions, and replacing them with constraints
+that represent the possible return values from the functions, rather than having
+tons of branching points and constraints within the library function
+itself. There are a couple ways of doing this, from using some huerestic to
+detect known functions, or actually stubbing out the real library we are
+optimizing with one that has markers that the Taint Analysis tool would be able
+to detect and choose to pause instrumentation.
+
+Another improvement that needs to be made to the Taint Analysis system is
+support for additional types of tainted input, either more general user input
+from the console, to actual data packets through network sockets. Having these
+additional forms of tainted input would allow us to test more parts of the code
+without having to have artificial wrappers that convert a file input into a
+network or user input.
+
+Finally, the last major improvement to the Taint Analysis system that would be
+useful is the addition of more ways to detect ``bad'' or potentially troublesome
+states, some can be as simple as invalid memory access detection (which already
+can be done with PIN) or even so far as detecting unintentional control flow
+hijacking or policy violation. These would allow the system to detect a wider
+array of potential issues all at once.
+
+\section{Concolic Execution Improvements}
+On the Concolic Execution end, one improvement is to the way we handle
+constraints. If we are able to reduce the number of variables we create when
+parsing the tainted assembly instructions, we could reduce some of the work z3
+has to do when solving the equations. Similarly, if we are able to detect more
+compound data structures, such as strings, we would be able to combine many of
+the generated constraints together and use things like z3str for string
+computations.
+
+Additionally, if we were able to do better path and loop detection, we could
+improve the search algorithm we use to search more interesting parts of the
+program space without spending a bunch of time repeatedly working on the same
+looping structure. Generally, having an improved search algorithm and
+prioritization would allow us to reach interesting test cases much earlier.
+
+Another overall improvement to the system that should be done in the future is
+adapting it to work together with other existing Fuzzers. While
+\textit{Confuzzer} has a advantage on some test cases that other fuzzers have
+trouble with, the existing fuzzers also have their own advantages on other parts
+of the program execution. Allowing multiple fuzzers to work together would allow
+a wider search of the program input space without having all the test cases take
+as long as the \textit{Confuzzer} test cases take.

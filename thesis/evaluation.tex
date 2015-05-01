@@ -1,7 +1,83 @@
-%% This is an example first chapter.  You should put chapter/appendix that you
-%% write into a separate file, and add a line \include{yourfilename} to
-%% main.tex, where `yourfilename.tex' is the name of the chapter/appendix file.
-%% You can process specific files by typing their names in at the 
-%% \files=
-%% prompt when you run the file main.tex through LaTeX.
 \chapter{Evaluation}
+To evaluate \textit{Confuzzer}, we compare its performance on our test cases
+with the anticipated performance for blind fuzzing and other systems. We can
+only calculate expected performance for blind fuzzing, since it would take
+longer than available to test some of our test cases.
+
+\begin{table}
+\begin{center}
+\begin{tabular}{| c | c | c | c | p{6cm} |}
+\hline
+Test Case & Confuzzer & Blind Fuzzing & AFL & Description\\\hline
+test1 & 8 & 1.10e12 & ??? & Simple magic value test\\\hline
+test2 & 6 & 1.10e12 & ??? & Keygen test using xored value\\\hline
+test4 & 40494 & 1.84e19 & ??? & Toy shell example without overflow\\\hline
+test4 & 40494 & 1.84e19 & ??? & Toy shell example with overflow\\\hline
+\end{tabular}
+\end{center}
+\caption{Test Cases per Fuzzing System}
+\label{table:evalcases}
+\end{table}
+
+\begin{table}
+\begin{center}
+\begin{tabular}{| c | c | c | c | c | p{6cm} |}
+\hline
+Test Case & Confuzzer & Confuzzer (Distributed) & Blind Fuzzing & AFL\\\hline
+test1 & 0.21 runs/sec & 3.2 runs/sec & 2513 runs/sec & 9850 runs/sec\\\hline
+test2 & 0.20 runs/sec & 3.1 runs/sec & 2497 runs/sec & 9879 runs/sec\\\hline
+test3 & 0.18 runs/sec & 2.7 runs/sec & 2454 runs/sec & 10.8k runs/sec\\\hline
+test4 & 0.17 runs/sec & 2.7 runs/sec & 2434 runs/sec & 11.3k runs/sec\\\hline
+\end{tabular}
+\end{center}
+\caption{Fuzzing Speed}
+\label{table:evaltime}
+\end{table}
+
+We first look at the number of test cases that our fuzzers generate, since
+programs of similar complexity will have roughly the same branching amounts,
+giving us a better picture of how each system scales. Our rough results are in
+Figure \ref{table:evalcases}. The estimate for blind fuzzing is based on the
+number of possible inputs before we are likely to hit a crashing input. We
+weren't able to make measurements for AFL, since it wasn't able to determine
+sufficient information to prioritize certain kinds of input, even with a basic
+set of example inputs for the test application. One of the advantages of AFL is
+that it is able to notify the user of crashing inputs while still running,
+compared to the current implementation of Confuzzer.
+
+We then measure the amount of time each fuzzing system takes to run test cases,
+to show how the speed of the Confuzzer compares to the other systems. Figure
+\ref{table:evaltime} shows that the speed of the Confuzzer system is orders of
+magnitudes slower than the other systems. We actually end up having better
+timing from AFL than Blind Fuzzing since it forks the binary instead of creating
+a new process for every test case.
+
+This shows how the Concolic Fuzzer system is able to hone in on specific
+interesting inputs without having to hit a ton of unnecessary inputs, however
+the process of finding inputs takes a long time and is heavily dependent on the
+size of paths in the binary being fuzzed.
+
+While the test cases we are using for the system are a bit artificial, there are
+many existing programs that have similar constructs, including parsers that
+search for magic values in order to figure out whether a file is valid, key
+verification systems that check whether an input is valid to detect some key
+file is valid, and even network protocols that expect a certain class of inputs.
+
+From the timing results, we could probably end up with a more efficient system
+by using a combination of \textit{Confuzzer} to generate inputs that pass
+through taint checks, and then using AFL or another Fuzzer in order to look for
+alternate inputs past the initial checks in the program. Unfortunately doing
+this sort of merged Fuzzing requires either some amount of user input to
+determine when to switch between the systems, or some sort of heuristic to deal
+with moving between the fuzzers.
+
+The results for AFL also show that its possible that moving from a PIN
+instrumenter to something using QEMU User Mode Emulation might offer an
+improvement in the running time of the system. Most of the slowness in running
+the Confuzzer system comes from the context switching and instrumentation of the
+binary code. We can increase the speed of the Fuzzer using our distributed
+system to run multiple instances of the binary and Taint Analysis system. Some
+of the additional improvements we can apply to \textit{Confuzzer} are covered in
+the \textbf{Future Work} section in Chapter 6.
+
+% TODO: 2/4 Pages

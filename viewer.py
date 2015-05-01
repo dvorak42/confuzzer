@@ -1,6 +1,8 @@
 import networkx as nx
 import matplotlib.pyplot as plt
 
+nn = 0
+
 def startGraph():
     plt.ion()
 
@@ -16,7 +18,7 @@ def drawGraph(data, final=False):
         for n in path:
             if '%s-%s' % (indx, n[0]) not in ids:
                 ids['%s-%s' % (indx, n[0])] = nextID
-                labels[nextID] = ('%s_%s' % (len(indx), n[0])) + ':\n  ' + n[1]
+                labels[nextID] = ('%s_%s' % (nextID, n[0])) + ':\n  ' + n[1]
                 nextID += 1
             graph.append((ids[indx], ids['%s-%s' % (indx, n[0])]))
             edge_labels[graph[-1]] = str(prevNode[2])
@@ -38,6 +40,9 @@ def drawGraph(data, final=False):
     else:
         plt.plot()
         plt.draw()
+    global nn
+    plt.savefig('graph_%d.pdf' % nn)
+    nn += 1
 
 
 if __name__ == "__main__":

@@ -61,13 +61,24 @@ constraints are under constrained or simple substitutions.
 \centering
 \begin{verbatim}
 Tainted: RAX0_1, RAX1_1
-Instruction: xor ax, 0x2020
+
+Instructions:
+  mov bx, 0x2020
+  xor ax, bx
+
+
 Tainted: RAX0_1, RAX1_1, RAX0_2, RAX1_2
+Tainted Instructions:
+  RAX_AX_2: xor ax, bx ::: 0x2020 + RAX_AX_1 -> RAX_AX_2
+
 
 New Constraints:
  RAX_AX_1 = {RAX1_1, RAX0_1}
+
  RAX_AX_2 = OP(RAX_AX_1 + 0x2020)
+
  RAX1_2 = RAX_AX_2[1]
+
  RAX0_2 = RAX_AX_2[0]
 \end{verbatim}
 \caption{Register Constraints Example}
@@ -149,6 +160,93 @@ generate concrete values for all the variables. Once this step is done, the
 result can be passed to the Input Generation phase to create new test cases.
 
 \subsection{Input Generation}
+Once we've solved the SMT equations to find concrete values for each of the
+variables in the constraints, we actually have to generate an input using these
+concrete values. While normally straightforward, we have to deal with parts of
+the tainted file that may never have been read by the current execution of the
+program or other edge cases. Instead what we do is first find the size of the
+tainted file that we need to create, by finding the largest value for which a
+symbol is defined representing the tainted input file and creating an initial
+array representing the file defaulting to using the null byte. Once we've
+generated the array, we replace the values that we have concrete values for from
+the SMT solver and generate a file.
 
+While using null bytes as the default could have problems since some code stops
+parsing a file at the nullbyte, we would have a constraint representing this
+case in the list of constraints from the program execution, so we don't need to
+add a special exception for that case.
+
+Its at this stage that we deal with de-duplicating inputs that we already have
+seen. This prevents us from revisiting paths that we have already
+analyzed. Another way with dealing with duplicate inputs is to keep track of the
+sets of paths that have been explored and then checking our new path against
+that list.
 
 \section{Minor Component Design}
+In addition to these major components of \textit{Confuzzer}, we also have a
+number of other smaller components that are used to help make the system more
+efficient and to allow greater usability.
+
+\subsection{Distributed Nodes}
+\begin{figure}[ht]
+ \centering
+ \includegraphics{distnodes}
+ \caption{Distibuted Nodes for Taint Analysis}
+ \label{figure:distnodes}
+\end{figure}
+
+One of the first optimizations made to the design is the ability to distribute
+the workload from a single machine to many. We achieve this by creating workers
+running on various servers that accept tasks that detail the value that should
+be used for the tainted input, as well as the filename to execute. To prevent
+malicious use of this system, we require that the binary being tested be
+uploaded to the servers through a separate channel. Figure
+\ref{figure:distnodes} shows the overall design of the distributed system.
+
+On the worker side, there is a loop while it waits for a task, and once it
+receives a task, it creates a new directory with a copy of the binary and all
+files accessed by the binary. It then runs the Taint Analysis tool on the binary
+in that directory, and upon completion returns the result of the Taint Analysis
+to the master. This design is done so that different executions of the binary
+don't interfere with each other, and to keep a log of all binary executions on
+disk in case further study of a particular testcase might be necessary at a
+later time.
+
+Meanwhile, on the master side, there are threads for each worker, that pull a
+task off the synchronized queue (filled by the Input Generation phase) and send
+them over RPC calls to the various workers. The queue is prioritized based on
+metrics from the Concolic Execution system and the Graph Viewer (described
+below). Once a worker has completed its task, the results are stored in another
+queue to be returned to the Concolic system.
+
+This design allows us to run a lot of tests at the same time without having to
+wait for each one to complete. Since the slowest part of the system is the Taint
+Analysis system, this distributed system greatly improves the time it takes to
+run lots of tests. For larger programs, the Concolic Execution system can also
+be distributed across multiple nodes when the SMT solving stage takes a
+considerable amount of time.
+
+\subsection{Graph Viewer}
+In addition to the other components, we also generate a graph for each new path
+that is discovered, and use that to allow a user to prioritize certain branches
+when performing further tests.
+
+The graph viewer works by creating a separate node for every branching point and
+an edge for both the TRUE and FALSE paths from each branch. Since we are
+branching forward from the initial root node, this setup creates a tree
+structure that represents all possible branches that we know about so far.
+
+In order to build up the tree, we iterate through each path we've visited and
+create a new node for any new branching points and new edges for the direction
+that the path travels down. Since the program may sometimes loop back to the
+same branching point, we need to keep track of the visited path prefix and
+create a new node whenever the new branch happens with a different prefix than
+the nodes that we've already drawn, joining paths that have the same prefix and
+branch.
+
+Experienced users can use the branching pattern and assembly code disassembly to
+select parts of the code to prioritize when generating new paths, allowing the
+system to explore all the paths in specific critical sections of the code that
+the user might have reason to believe are more vulnerable to malicious inputs.
+
+%TODO: 6 Pages

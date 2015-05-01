@@ -1,1 +1,18 @@
 \chapter{Conclusion}
+In this thesis, we presented \textit{Confuzzer}, an implementation of a Concolic
+Execution Fuzzer to help with finding inputs to the program that can cause
+malicious behavior. Unlike most existing Fuzzers, Concolic Execution allows us
+to get through sections of the binary that require matching certain values and
+allowing us to get past sections that would otherwise cause other Fuzzers to
+take a long amount of time. In implementing this system, we've aimed to design
+the system to allow the analysis of as many binaries as possible, without
+requiring source code to perform the analysis. While this prevents us from
+constructing Intermediate Representations to use in doing the taint analysis, we
+are still able to parse x86 instructions sufficiently to determine how to spread
+taint through the program.
+
+While there are still many improvements that could make to the system, the
+initial prototype is already able to test a class of programs that are difficult
+to test with the existing systems. Being able to programatically generate test
+cases is an important step in better securing existing code and doing in-depth
+testing fast enough to be effective against determined attackers.

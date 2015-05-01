@@ -3,7 +3,7 @@
 
 int main(void)
 {
-  int NC = 8;
+  int NC = 4;
   char buf[NC];
   char* files[256] = {0};
   int fd = 0;

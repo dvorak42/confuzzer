@@ -141,7 +141,7 @@ def userInput(fp):
 
 def run(program, taintedInput):
     print "Testing %s with tainted input %s" % (program, taintedInput)
-    fp = FuzzedProgram(program, taintedInput, False)
+    fp = FuzzedProgram(program, taintedInput, True)
     t = Thread(target=userInput, args=(fp,))
     #t.start()
     fp.setInput('')
