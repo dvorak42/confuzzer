@@ -79,12 +79,12 @@ taintRegToReg(instruction, srcReg, dstReg):
     for(i in [chunkStart, chunkEnd]):
       removeTaint(dst)
 \end{verbatim}
- \caption{Taint Spread Psuedo-code}
+ \caption{Taint Spread Pseudo-code}
  \label{figure:taintcode}
 \end{figure}
 
 
-Figure \ref{figure:taintcode} shows the psuedocode for actually spreading taint
+Figure \ref{figure:taintcode} shows the pseudocode for actually spreading taint
 around the various registers and addresses the program accesses. For any
 operations that use tainted registers and addresses, we increment the ID of the
 registers being written and then taint them, as well as adding a constraint
@@ -98,7 +98,7 @@ have an instruction that moves non-tainted values into a register. Without
 clearing the taint flags, we would end up with almost all the registers and
 addresses accessed by the program after the original tainted file is read.
 
-Finally we need to keep on propogating any parts of the register that weren't
+Finally we need to keep on propagating any parts of the register that weren't
 affected by the current instruction. This is actually a simplification of the
 actual code since we need to cast the register chunks together so that the
 instruction can operate on them, and then cast it back into separate chunks for
@@ -126,7 +126,7 @@ cases.
 
 \section{Concolic System}
 The Concolic System is implemented using a combination of Python and z3 bindings
-to parse the file received from the Taint Analysis system. Every time we recieve
+to parse the file received from the Taint Analysis system. Every time we receive
 the analysis, we parse it in two stages. The first stage parses the taint
 constraints into formulas, and the second stage creates the z3 equations.
 
@@ -160,7 +160,7 @@ create $N$ new paths for every path with $N$ branching points. We then
 de-duplicate the repeated paths/inputs once we've converted the solutions from
 the SMT solver into actual input files. A good number of paths will end up being
 unsatisfiable since there are no inputs to reach that path, or there are
-contradictory branchs from non-optimized or dead code.
+contradictory branches from non-optimized or dead code.
 
 Once we've solved the constraint equations, we generate a new test input and
 place it into a test input queue. Its during this phase that we check whether

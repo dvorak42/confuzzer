@@ -19,7 +19,7 @@ add special constraint equations to the Taint log. One example is being able to
 detect strcmp and other related functions, and replacing them with constraints
 that represent the possible return values from the functions, rather than having
 tons of branching points and constraints within the library function
-itself. There are a couple ways of doing this, from using some huerestic to
+itself. There are a couple ways of doing this, from using some heuristic to
 detect known functions, or actually stubbing out the real library we are
 optimizing with one that has markers that the Taint Analysis tool would be able
 to detect and choose to pause instrumentation.

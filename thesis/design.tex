@@ -18,7 +18,7 @@ operation or categories to separate the various assembly instructions.
 \begin{figure}[htbp]
  \centering
  \includegraphics{taintprop}
- \caption{Taint Propogation Example}
+ \caption{Taint Propagation Example}
  \label{figure:taintprop}
 \end{figure}
 
@@ -172,7 +172,7 @@ generated the array, we replace the values that we have concrete values for from
 the SMT solver and generate a file.
 
 While using null bytes as the default could have problems since some code stops
-parsing a file at the nullbyte, we would have a constraint representing this
+parsing a file at the null-byte, we would have a constraint representing this
 case in the list of constraints from the program execution, so we don't need to
 add a special exception for that case.
 
@@ -191,14 +191,14 @@ efficient and to allow greater usability.
 \begin{figure}[ht]
  \centering
  \includegraphics{distnodes}
- \caption{Distibuted Nodes for Taint Analysis}
+ \caption{Distributed Nodes for Taint Analysis}
  \label{figure:distnodes}
 \end{figure}
 
 One of the first optimizations made to the design is the ability to distribute
 the workload from a single machine to many. We achieve this by creating workers
 running on various servers that accept tasks that detail the value that should
-be used for the tainted input, as well as the filename to execute. To prevent
+be used for the tainted input, as well as the file name to execute. To prevent
 malicious use of this system, we require that the binary being tested be
 uploaded to the servers through a separate channel. Figure
 \ref{figure:distnodes} shows the overall design of the distributed system.
@@ -209,7 +209,7 @@ files accessed by the binary. It then runs the Taint Analysis tool on the binary
 in that directory, and upon completion returns the result of the Taint Analysis
 to the master. This design is done so that different executions of the binary
 don't interfere with each other, and to keep a log of all binary executions on
-disk in case further study of a particular testcase might be necessary at a
+disk in case further study of a particular test case might be necessary at a
 later time.
 
 Meanwhile, on the master side, there are threads for each worker, that pull a
@@ -244,7 +244,7 @@ create a new node whenever the new branch happens with a different prefix than
 the nodes that we've already drawn, joining paths that have the same prefix and
 branch.
 
-Experienced users can use the branching pattern and assembly code disassembly to
+Experienced users can use the branching pattern and assembly code dis-assembly to
 select parts of the code to prioritize when generating new paths, allowing the
 system to explore all the paths in specific critical sections of the code that
 the user might have reason to believe are more vulnerable to malicious inputs.

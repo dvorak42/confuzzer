@@ -40,7 +40,7 @@ made and how it compares to a fuzzer based on symbolic execution principles.
 One of the most well-known fuzzer is ``american fuzzy lop'', a fairly effective
 fuzzer developed using compile-time instrumentation and genetic algorithms to
 generate additional test cases to check against the application \cite{afl}. Due
-to some of the optimizatoins made over other fuzzers, and its use of
+to some of the optimizations made over other fuzzers, and its use of
 optimizations at the instrumentation level, it is one of the fastest binary-only
 fuzzers available \cite{afldesign}. It has found bugs in over $75$ different
 pieces of software and has multiple CVEs dedicated to bugs found by AFL.
@@ -54,7 +54,7 @@ compile-time instrumentation to function and are thus less effective with
 closed-source binaries.
 
 However afl-fuzz still accomplishes a great deal while staying true to its
-original design goals of being fast, useable and reliable for the general use
+original design goals of being fast, usable and reliable for the general use
 \cite{aflhistory}. As afl-fuzz is improved, so to are the optimizations and
 performance hacks that can be used by other Fuzzing systems aimed at fuzzing
 primarily closed-source binaries.
@@ -80,7 +80,7 @@ S$^2$E & No & No & System & Path Exploration tool to analyze binaries.\\
 There are also a number of Symbolic Execution systems that use Symbolic
 Execution to perform path exploration for the purpose of fuzzing or doing other
 sorts of analysis on the program. While almost all the Symbolic Execution
-systems have a significantly slower runtime than other Fuzzers (sometimes up to
+systems have a significantly slower run-time than other Fuzzers (sometimes up to
 1000x slowdown), they do provide a significant advantage to other fuzzers, as
 they can find fewer test cases that cover more of the possible execution paths
 through the program. Some notable ones are KLEE, SAGE, and S$^2$E. We'll briefly go
@@ -146,7 +146,7 @@ Symbolic Execution, where it attempts to explore all paths simultaneously, and
 then generates valid test cases once the paths have all been explored. While
 this works for small programs and limited tainted inputs, this can result in a
 combinatorial explosion in paths that might prevent the execution from finishing
-in any reasonable timeframe. S$^2$E also has a focus on plugins/analyzers that
+in any reasonable time-frame. S$^2$E also has a focus on plugins/analyzers that
 look for specific states or conditions being violated, rather than more general
 problems in the program execution, making it difficult to get the full benefits
 of a fully symbolic system.
