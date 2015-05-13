@@ -86,7 +86,11 @@ they can find fewer test cases that cover more of the possible execution paths
 through the program. Some notable ones are KLEE, SAGE, and S$^2$E. We'll briefly go
 over each of these to see how they compare to Confuzzer. Table
 \ref{table:othersys} also provides an overview of these systems and their
-features.
+features. While many of the systems that we're looking at have some of the
+properties that we are aiming for in the \textit{Confuzzer} system, none of them
+have all the properties we are lookiing for. The closest one is SAGE, however
+SAGE is mostly focused on Windows binaries and has a different set of
+limitations in the way it handles taint propogation.
 
 \subsection{KLEE}
 KLEE is a symbolic execution tool that uses source code and the LLVM compiler to

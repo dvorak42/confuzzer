@@ -1,8 +1,13 @@
 \chapter{Evaluation}
-To evaluate \textit{Confuzzer}, we compare its performance on our test cases
-with the anticipated performance for blind fuzzing and other systems. We can
-only calculate expected performance for blind fuzzing, since it would take
-longer than available to test some of our test cases.
+Since our goal for this system is to create a Fuzzer that works well with
+programs that have complicated control flow conditionals or many branches, we
+are evaluating our system using test cases with these properties. To evaluate
+\textit{Confuzzer}, we compare its performance on the test cases against both
+AFL, one of the most popular and successful Fuzzers, as well as against a
+generic Blind Fuzzer that generates inputs with no feedback information from the
+binary we are evaluating. Due to the amount of time needed for running the
+latter tests, we end up calculating expected performance based on testing on a
+slice of the input space.
 
 \begin{table}
 \begin{center}
@@ -80,4 +85,7 @@ system to run multiple instances of the binary and Taint Analysis system. Some
 of the additional improvements we can apply to \textit{Confuzzer} are covered in
 the \textbf{Future Work} section in Chapter 6.
 
-% TODO: 2/4 Pages
+From the evaluation, we see that this system is able to hit the goals of the
+system and succeed at beating out other Fuzzers on these special class of
+difficult binaries that other Fuzzers have failed to get useful/complete results
+on in a timely manner.

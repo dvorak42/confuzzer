@@ -4,6 +4,23 @@ design into two major parts, the Taint System design and the Concolic System
 design, as well as an additional section that covers the design of the smaller
 components of the Confuzzer system.
 
+\begin{figure}[htbp]
+ \centering
+ \includegraphics{designoverview}
+ \caption{Confuzzer Design Overview}
+ \label{figure:designoverview}
+\end{figure}
+
+Figure \ref{figure:designoverview} shows how the various pieces of the design
+interact and work together. In the following sections we'll cover details about
+each of these parts. In general, the Concolic System first generates a default
+test case that is fed into the distributed Taint System, and as we get results
+from the Taint System, the Concolic System keeps on generating new constraints
+and inputs that are repeatedly sent back to the Taint System. In addition, the
+Concolic System also displays the current explored branches through the UI to
+give the user an idea of the state of fuzzing and to allow them to prioritize
+different sections of the program execution.
+
 \section{Taint System Design}
 One of the major parts of this system is the system that keeps track of the
 spread of Taint through a program from the tainted input that we are

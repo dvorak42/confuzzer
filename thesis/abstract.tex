@@ -1,9 +1,13 @@
 In this thesis, I designed and implemented \textit{Confuzzer}, a system that
-fuzzes closed source binaries using Concolic Execution techniques in order to
-find vulnerable inputs into programs that could be leveraged by attackers to
-compromise systems that the binary might be running on. The system primarily
-consists of a Taint and Crash Analysis tool built on top of Intel PIN, a Dynamic
-Binary Instrumentation Tool, a Path Exploration system written in Python using
-the z3 SMT solver to parse the tainted paths and generate symbolic equations for
-those paths, and a set of nodes that receive test inputs and run the Taint/Crash
-Analysis tool in order to allow for parallelization of fuzzing tasks.
+fuzzes certain classes of closed source binaries using Concolic Execution
+techniques in order to find vulnerable inputs into programs that could be
+leveraged by attackers to compromise systems that the binary might be running
+on. The design of this system allows improved performance on fuzzing programs
+that have a large branching factor or are heavily based on complex conditionals
+determining control flow. The system is designed around a Taint/Crash Analysis
+tool combined with a Path Exploration system to generate symbolic
+representations of the paths, generating a new set of inputs to be tested. These
+are implemented using a combination of Intel PIN for the Taint Analysis and
+Python/z3 for the Path Exploration. Results show that while this system is very
+slow in instrumenting each run of the binary, we are able to reduce the search
+space to a manageable level compared to other existing tools.

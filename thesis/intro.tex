@@ -1,26 +1,30 @@
 \chapter{Introduction}
-Since the start of Computer Security, the struggle between attackers and
-defenders has been about finding vulnerabilities in software and systems that
-can be exploited or protected to prevent unauthorized access. Unfortunately due
-to the asymmetric nature of attackers and defenders, where attackers only need
-to succeed at finding a single vulnerability and defenders have to find and
-remove all vulnerabilities from a system, the traditional form of bug finding
-has rarely succeeded at stopping motivated attackers.
+Finding bugs in existing software and computer systems is difficult, and while
+manually finding bugs can be effective to a limited extent, a large part of
+Computer Security has moved to using automated methods for finding bugs within a
+program. This paper presents \textit{Confuzzer}, a system that helps find bugs
+in a specific class of closed-source binaries which other existing systems tend
+to have trouble with. Many existing systems fail to perform well with programs
+that have a large branching factor and depend on complex conditionals to
+determine the control flow of the program, and as a result end up exploring only
+a small part of the program. This can result in vulnerabilities in other parts
+of the program being completely missing. While the system described is more
+specialized than existing tools, the goal is to create a system that allows
+security engineers to look for and attack bugs in programs that have previously
+been difficult to explore using automated methods. 
 
-Even with systems like Bug Bounties and Vulnerability Reward Programs, where bug
-hunting is distributed among many security researchers with prizes of up to
-several tens of thousands, the number of bugs in existing systems makes it
-infeasible to find all of them and prevent attackers from exploiting
-them \cite{googlevrp}. With the ever worsening gap between attackers and
-defenders, the state of the art in finding bugs in existing code has moved from
-manual inspection of the code to find bugs, to a more automated method where we
-automatically generate inputs and test them against the binary, in the hopes
-that one of the generated inputs will result in a bug being discovered. This
-method of randomly testing inputs to cause programs to behave incorrectly is
-called \textit{Fuzzing} and was invented as early as 1988 as part of a graduate
-class \cite{fuzzingorigin}. Since those early days, the art of \textit{Fuzzing}
-has advanced to a great degree, with advancements in how test cases are actually
-generated.
+Automated methods of bug finding are necessary, since even with systems like Bug
+Bounties and Vulnerability Reward Programs, where bug hunting is distributed
+among many security researchers with prizes of up to several tens of thousands,
+the number of bugs in existing systems makes it infeasible to find all of them
+and prevent attackers from exploiting them \cite{googlevrp}. This means that we
+need automated methods of generating and testing inputs against our target
+binary, in the hopes that one of the generated inputs will result in a bug being
+discovered. This method of randomly testing inputs to cause programs to behave
+incorrectly is called \textit{Fuzzing} and was invented as early as 1988 as part
+of a graduate class \cite{fuzzingorigin}. Since those early days, the art of
+\textit{Fuzzing} has advanced to a great degree, with advancements in how test
+cases are actually generated.
 
 \textit{Fuzzing} systems tend to be divided into 2 main categories. The first is
 black-box fuzzing, where the fuzzing is performed independently of the program
@@ -63,6 +67,33 @@ large swaths of the program with fewer inputs. By combining these two ideas
 together, we hopefully will have a system that can more efficiently test closed
 source programs and find vulnerabilities in them without having to wait until an
 attacker starts actively exploiting the vulnerability.
+
+Our implementation of the \textit{Confuzzer} design uses the Intel PIN Dynamic
+Binary Instrumentation (DBI) tool to do Taint Analysis and then uses z3 and the
+Python z3 bindings to actually solve the constraints for the various inputs to
+explore different paths in the binary. In order to run the system at a
+reasonable speed, and take advantage of the parallelizability of the system, we
+also need to distribute the taint analysis over multiple machines. While the
+final design of the system was fairly straightforward, I had a lot of issues in
+implementing the Intel PIN tool since we didn't have a good Intermediate
+Representation so we had to handle each individual assembly instruction
+manually, which resulted in a lot of bugs during the implementation. PIN also
+didn't have the cleanest memory and API model, resulting in many memory issues
+while trying to implement the system. In order to avoid these problems in future
+systems, while still maintaining our goals of closed-source fuzzing, using an
+alternative DBI or even moving to a emulator such as the User-Mode Emulation
+might result in an easier implementation.
+
+When testing our implementation compared with other similar systems, we found
+that the versus other similar systems, execution of the binary was significantly
+slower than the other fuzzers we had, running at about 3 executions per second
+on our test cases, versus about 10k executions per second using some of the high
+end fuzzers we were testing. However our evaluations also shows how we have
+orders of magnitude fewer test cases that we need to run in order to fully
+explore the test cases. Overall, from these test cases we see that while the
+executions are factors slower, the speed-up from the smaller set of test cases
+needed greatly counteracts these issues, and as a result this fuzzer succeeds at
+the class of programs we are trying to analyze with this system.
 
 In Chapter 2, we'll give an overview of existing systems in the space, as well
 as the similarities and differences with the \textit{Confuzzer} system. Next in
